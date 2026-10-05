@@ -21,7 +21,9 @@ interface ThemeContextValue {
   setTheme: (t: Theme) => void;
 }
 
-const STORAGE_KEY = 'nehishlens.theme';
+// `.v2`: the old key held 'dark' for every past visitor (the previous default
+// was persisted on load), so it is ignored to let light take effect.
+const STORAGE_KEY = 'nehishlens.theme.v2';
 
 function readStored(): Theme {
   try {
@@ -30,7 +32,7 @@ function readStored(): Theme {
   } catch {
     /* ignore */
   }
-  return 'dark';
+  return 'light';
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
