@@ -1,0 +1,21 @@
+{
+  "ts": "2026-09-02T16:13:10.249Z",
+  "method": "GET",
+  "path": "/audit/5508d2b710e64bc470079e1b211d9c58e21011e59d0559e422345dc19d659a75",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/audit/5508d2b710e64bc470079e1b211d9c58e21011e59d0559e422345dc19d659a75",
+  "lens": "eng",
+  "status": 200,
+  "ok": true,
+  "durationMs": 122,
+  "responseBody": {
+    "seq": 1,
+    "at": "2026-08-31T18:58:18+05:30",
+    "actor": "system",
+    "actorKind": "ai",
+    "verb": "store.reset",
+    "object": "store",
+    "payload": {},
+    "prevHash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "hash": "5508d2b710e64bc470079e1b211d9c58e21011e59d0559e422345dc19d659a75"
+  }
+}

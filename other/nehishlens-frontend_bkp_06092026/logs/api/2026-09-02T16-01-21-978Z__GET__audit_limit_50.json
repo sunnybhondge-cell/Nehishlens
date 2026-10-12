@@ -1,0 +1,503 @@
+{
+  "ts": "2026-09-02T16:01:21.978Z",
+  "method": "GET",
+  "path": "/audit?limit=50",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/audit?limit=50",
+  "lens": "eng",
+  "status": 200,
+  "ok": true,
+  "durationMs": 50,
+  "responseBody": {
+    "items": [
+      {
+        "seq": 1,
+        "at": "2026-08-31T18:58:18+05:30",
+        "actor": "system",
+        "actorKind": "ai",
+        "verb": "store.reset",
+        "object": "store",
+        "payload": {},
+        "prevHash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "hash": "5508d2b710e64bc470079e1b211d9c58e21011e59d0559e422345dc19d659a75"
+      },
+      {
+        "seq": 2,
+        "at": "2026-08-31T19:12:56+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "today",
+        "payload": {
+          "question": "Draft the shift handover",
+          "reason": "no_grounding"
+        },
+        "prevHash": "5508d2b710e64bc470079e1b211d9c58e21011e59d0559e422345dc19d659a75",
+        "hash": "c6760365a8bfbf52f7bfde302c5bb4a2a19b0e8293d59d28a547aab73694a0c6"
+      },
+      {
+        "seq": 3,
+        "at": "2026-08-31T19:13:12+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "incidents",
+        "payload": {
+          "question": "Show res#1198",
+          "reason": "no_grounding"
+        },
+        "prevHash": "c6760365a8bfbf52f7bfde302c5bb4a2a19b0e8293d59d28a547aab73694a0c6",
+        "hash": "9ea647c924bc98d1ae3ae9fea70b6d2c3c07e3f74d0727183b9a66f7dcd0b32c"
+      },
+      {
+        "seq": 4,
+        "at": "2026-08-31T19:13:14+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "incidents",
+        "payload": {
+          "question": "What differs from 09-Jul?",
+          "reason": "no_grounding"
+        },
+        "prevHash": "9ea647c924bc98d1ae3ae9fea70b6d2c3c07e3f74d0727183b9a66f7dcd0b32c",
+        "hash": "c3bc78f558a523d68abaae6197ff9e5b30d24a0defba9fca13da95492cb94040"
+      },
+      {
+        "seq": 5,
+        "at": "2026-08-31T19:13:17+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "incidents",
+        "payload": {
+          "question": "Run the mandate cross-check",
+          "reason": "no_grounding"
+        },
+        "prevHash": "c3bc78f558a523d68abaae6197ff9e5b30d24a0defba9fca13da95492cb94040",
+        "hash": "4e8190c1dc4acfe372fef3219cacd964340d4896e60b478b83d9efd742e20786"
+      },
+      {
+        "seq": 6,
+        "at": "2026-08-31T19:14:53+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.answer",
+        "object": "incident-detail",
+        "payload": {
+          "question": "What evidence supports this diagnosis?",
+          "confidencePct": 96
+        },
+        "prevHash": "4e8190c1dc4acfe372fef3219cacd964340d4896e60b478b83d9efd742e20786",
+        "hash": "16eae481e0e14b8e7f84235cadaeae02920ef028fdecb21c324a4c8d80453a82"
+      },
+      {
+        "seq": 7,
+        "at": "2026-08-31T19:14:53+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.answer",
+        "object": "incident-detail",
+        "payload": {
+          "question": "What could not be verified?",
+          "confidencePct": 74
+        },
+        "prevHash": "16eae481e0e14b8e7f84235cadaeae02920ef028fdecb21c324a4c8d80453a82",
+        "hash": "6c0f114731b16123d7bd91fb348b5564951e204f46b8e971cfdde9dab68e7d8e"
+      },
+      {
+        "seq": 8,
+        "at": "2026-08-31T19:14:53+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.answer",
+        "object": "incident-detail",
+        "payload": {
+          "question": "Has this happened before?",
+          "confidencePct": 96
+        },
+        "prevHash": "6c0f114731b16123d7bd91fb348b5564951e204f46b8e971cfdde9dab68e7d8e",
+        "hash": "6acca2310580f26e788a5cac0dff75ac8c4d23efd9232844751a6cc750e41bd8"
+      },
+      {
+        "seq": 9,
+        "at": "2026-08-31T19:14:53+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "incident-detail",
+        "payload": {
+          "question": "What is the capital of France?",
+          "reason": "no_grounding"
+        },
+        "prevHash": "6acca2310580f26e788a5cac0dff75ac8c4d23efd9232844751a6cc750e41bd8",
+        "hash": "4fe71340354e401d574ac9c8c0a40db99b3d242767711d29bb5c0cdd325dde3d"
+      },
+      {
+        "seq": 10,
+        "at": "2026-08-31T19:14:53+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "incident-detail",
+        "payload": {
+          "question": "Will it rain tomorrow?",
+          "reason": "no_grounding"
+        },
+        "prevHash": "4fe71340354e401d574ac9c8c0a40db99b3d242767711d29bb5c0cdd325dde3d",
+        "hash": "85c61113540f39c755ec187af3b5c75d6d3da2ef173943f80d4d513fc8de808b"
+      },
+      {
+        "seq": 11,
+        "at": "2026-08-31T19:33:49+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.answer",
+        "object": "incident-detail",
+        "payload": {
+          "question": "What could not be verified?",
+          "confidencePct": 74
+        },
+        "prevHash": "85c61113540f39c755ec187af3b5c75d6d3da2ef173943f80d4d513fc8de808b",
+        "hash": "5ce3726c0b224c03565b0dc3d8a9976b31768a38da0c63fea7a27e564df7dc1b"
+      },
+      {
+        "seq": 12,
+        "at": "2026-08-31T19:35:55+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.answer",
+        "object": "incident-detail",
+        "payload": {
+          "question": "What evidence supports this diagnosis?",
+          "confidencePct": 96
+        },
+        "prevHash": "5ce3726c0b224c03565b0dc3d8a9976b31768a38da0c63fea7a27e564df7dc1b",
+        "hash": "56f9d37fca07753ec0dea4830c96ef781dc86137adc6187a3ae443eabebbf5b3"
+      },
+      {
+        "seq": 13,
+        "at": "2026-08-31T19:35:55+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.answer",
+        "object": "incident-detail",
+        "payload": {
+          "question": "What could not be verified?",
+          "confidencePct": 74
+        },
+        "prevHash": "56f9d37fca07753ec0dea4830c96ef781dc86137adc6187a3ae443eabebbf5b3",
+        "hash": "153929c5c2a87b278b2f41de2f68a57a842ce551cf5d10eb8c2bd401ab68b088"
+      },
+      {
+        "seq": 14,
+        "at": "2026-08-31T19:35:55+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.answer",
+        "object": "incident-detail",
+        "payload": {
+          "question": "Has this happened before?",
+          "confidencePct": 96
+        },
+        "prevHash": "153929c5c2a87b278b2f41de2f68a57a842ce551cf5d10eb8c2bd401ab68b088",
+        "hash": "92c3f72b03526028f8f8fb71ac61c5ac7b0cedc0cc95a99738cd47a072326317"
+      },
+      {
+        "seq": 15,
+        "at": "2026-08-31T19:35:55+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "incident-detail",
+        "payload": {
+          "question": "What is the capital of France?",
+          "reason": "no_grounding"
+        },
+        "prevHash": "92c3f72b03526028f8f8fb71ac61c5ac7b0cedc0cc95a99738cd47a072326317",
+        "hash": "afb721712935c1f0be8ebd3de2657f5906601c3e3b73045959b58699a13a58a5"
+      },
+      {
+        "seq": 16,
+        "at": "2026-08-31T19:35:55+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "incident-detail",
+        "payload": {
+          "question": "Will it rain tomorrow?",
+          "reason": "no_grounding"
+        },
+        "prevHash": "afb721712935c1f0be8ebd3de2657f5906601c3e3b73045959b58699a13a58a5",
+        "hash": "cc75a7b42e2a6451100ed208e78d8ce288ca024d92f123669d4fa20e7b9c302d"
+      },
+      {
+        "seq": 17,
+        "at": "2026-08-31T19:36:30+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.answer",
+        "object": "incident-detail",
+        "payload": {
+          "question": "What could not be verified?",
+          "confidencePct": 74
+        },
+        "prevHash": "cc75a7b42e2a6451100ed208e78d8ce288ca024d92f123669d4fa20e7b9c302d",
+        "hash": "de09fe000bad1c47456a15484a901ca0570b13166e4219e228e5bcc8bb6579f9"
+      },
+      {
+        "seq": 18,
+        "at": "2026-08-31T19:36:32+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.answer",
+        "object": "incident-detail",
+        "payload": {
+          "question": "Has this happened before?",
+          "confidencePct": 96
+        },
+        "prevHash": "de09fe000bad1c47456a15484a901ca0570b13166e4219e228e5bcc8bb6579f9",
+        "hash": "7ce58e83978e0ce4062a3f8f81eadee4af2a5efdb7baa3148c7980ffc35454bb"
+      },
+      {
+        "seq": 19,
+        "at": "2026-08-31T19:40:53+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.answer",
+        "object": "incident-detail",
+        "payload": {
+          "question": "Has this happened before?",
+          "confidencePct": 96
+        },
+        "prevHash": "7ce58e83978e0ce4062a3f8f81eadee4af2a5efdb7baa3148c7980ffc35454bb",
+        "hash": "4dd029fb36839be8aebbd135f05a76df9fb12e9448f8c7c7a86372dbe21f8624"
+      },
+      {
+        "seq": 20,
+        "at": "2026-08-31T19:42:38+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.answer",
+        "object": "incident-detail",
+        "payload": {
+          "question": "What evidence supports this diagnosis?",
+          "confidencePct": 96
+        },
+        "prevHash": "4dd029fb36839be8aebbd135f05a76df9fb12e9448f8c7c7a86372dbe21f8624",
+        "hash": "babf7fd055fcdca60070fe1caba6275ed1f2d9a7ddd4f7f72aeace48733103e6"
+      },
+      {
+        "seq": 21,
+        "at": "2026-08-31T19:42:40+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.answer",
+        "object": "incident-detail",
+        "payload": {
+          "question": "What evidence supports this diagnosis?",
+          "confidencePct": 96
+        },
+        "prevHash": "babf7fd055fcdca60070fe1caba6275ed1f2d9a7ddd4f7f72aeace48733103e6",
+        "hash": "4004b1253dc86ee48c1252967b3ecd79def5402248d3bced18467e977eab8184"
+      },
+      {
+        "seq": 22,
+        "at": "2026-08-31T20:10:19+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.answer",
+        "object": "incident-detail",
+        "payload": {
+          "question": "What evidence supports this diagnosis?",
+          "confidencePct": 96
+        },
+        "prevHash": "4004b1253dc86ee48c1252967b3ecd79def5402248d3bced18467e977eab8184",
+        "hash": "a879fc95ff89c813abd5d5199d21fb6cc828415cd1725a090c723909ca1a49ad"
+      },
+      {
+        "seq": 23,
+        "at": "2026-08-31T20:10:20+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.answer",
+        "object": "incident-detail",
+        "payload": {
+          "question": "What evidence supports this diagnosis?",
+          "confidencePct": 96
+        },
+        "prevHash": "a879fc95ff89c813abd5d5199d21fb6cc828415cd1725a090c723909ca1a49ad",
+        "hash": "66df3cece039ae819afaad464e127ea5e8e4a26654eb804e9329729574515f81"
+      },
+      {
+        "seq": 24,
+        "at": "2026-09-02T20:46:02+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "eod",
+        "payload": {
+          "question": "Why did PENINT retry?",
+          "reason": "no_grounding"
+        },
+        "prevHash": "66df3cece039ae819afaad464e127ea5e8e4a26654eb804e9329729574515f81",
+        "hash": "cdf94275d62ea44ae01f914908e8e307c25d2b39dcc6f0e591c67ffe5e402647"
+      },
+      {
+        "seq": 25,
+        "at": "2026-09-02T20:46:06+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "eod",
+        "payload": {
+          "question": "Compare to last 7 nights",
+          "reason": "no_grounding"
+        },
+        "prevHash": "cdf94275d62ea44ae01f914908e8e307c25d2b39dcc6f0e591c67ffe5e402647",
+        "hash": "43e91b141f3175fd8e64c1d6d7da18dffee609c61b762165b42a7a5ff3df3702"
+      },
+      {
+        "seq": 26,
+        "at": "2026-09-02T20:46:10+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "today",
+        "payload": {
+          "question": "Draft the shift handover",
+          "reason": "no_grounding"
+        },
+        "prevHash": "43e91b141f3175fd8e64c1d6d7da18dffee609c61b762165b42a7a5ff3df3702",
+        "hash": "951c53cf2174e9375d775a7134c64e00fcb20e1e1af51ff931a97de734c5528f"
+      },
+      {
+        "seq": 27,
+        "at": "2026-09-02T21:29:20+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "incidents",
+        "payload": {
+          "question": "Show res#1198",
+          "reason": "no_grounding"
+        },
+        "prevHash": "951c53cf2174e9375d775a7134c64e00fcb20e1e1af51ff931a97de734c5528f",
+        "hash": "06888718857c07641b723d6db393758eceea56fa1386fd85caaa8fe94c5db129"
+      },
+      {
+        "seq": 28,
+        "at": "2026-09-02T21:29:23+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "incidents",
+        "payload": {
+          "question": "Run the mandate cross-check",
+          "reason": "no_grounding"
+        },
+        "prevHash": "06888718857c07641b723d6db393758eceea56fa1386fd85caaa8fe94c5db129",
+        "hash": "f874022164c0a8b73d21a59009f452227de1e822ea3df98b026fa611e50fb4fb"
+      },
+      {
+        "seq": 29,
+        "at": "2026-09-02T21:29:30+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "incidents",
+        "payload": {
+          "question": "Show res#1198",
+          "reason": "no_grounding"
+        },
+        "prevHash": "f874022164c0a8b73d21a59009f452227de1e822ea3df98b026fa611e50fb4fb",
+        "hash": "7fdaaec9868b1b1c48ef14dc73d66b5b7365bae4a640554de7c861abc97a8e49"
+      },
+      {
+        "seq": 30,
+        "at": "2026-09-02T21:29:36+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "incidents",
+        "payload": {
+          "question": "Run the mandate cross-check",
+          "reason": "no_grounding"
+        },
+        "prevHash": "7fdaaec9868b1b1c48ef14dc73d66b5b7365bae4a640554de7c861abc97a8e49",
+        "hash": "22b46ed0f369ac2566530291939489e7ddf162335365475ea81e1984242b5880"
+      },
+      {
+        "seq": 31,
+        "at": "2026-09-02T21:29:39+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "incidents",
+        "payload": {
+          "question": "What differs from 09-Jul?",
+          "reason": "no_grounding"
+        },
+        "prevHash": "22b46ed0f369ac2566530291939489e7ddf162335365475ea81e1984242b5880",
+        "hash": "7e6eb9e6fb78a6c826b34cf8bedeb3fca4137c6e0bd4f9263b94692733acc932"
+      },
+      {
+        "seq": 32,
+        "at": "2026-09-02T21:29:50+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.answer",
+        "object": "incident-detail",
+        "payload": {
+          "question": "What evidence supports this diagnosis?",
+          "confidencePct": 96
+        },
+        "prevHash": "7e6eb9e6fb78a6c826b34cf8bedeb3fca4137c6e0bd4f9263b94692733acc932",
+        "hash": "7c249744b1973791c89d77329551f416459bde53376cc57030f6a30ca72983f7"
+      },
+      {
+        "seq": 33,
+        "at": "2026-09-02T21:29:54+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.answer",
+        "object": "incident-detail",
+        "payload": {
+          "question": "What could not be verified?",
+          "confidencePct": 74
+        },
+        "prevHash": "7c249744b1973791c89d77329551f416459bde53376cc57030f6a30ca72983f7",
+        "hash": "9fe91f49ccd424e44046b530bec4eb8db80f9f5783fc32deaf59a22dbf0e41d2"
+      },
+      {
+        "seq": 34,
+        "at": "2026-09-02T21:29:56+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.answer",
+        "object": "incident-detail",
+        "payload": {
+          "question": "Has this happened before?",
+          "confidencePct": 96
+        },
+        "prevHash": "9fe91f49ccd424e44046b530bec4eb8db80f9f5783fc32deaf59a22dbf0e41d2",
+        "hash": "92719c964661050112d9ce3d75b6df02460131d747aefa11cc581de7a95c31da"
+      },
+      {
+        "seq": 35,
+        "at": "2026-09-02T21:30:10+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "incident-detail",
+        "payload": {
+          "question": "provide incident details",
+          "reason": "no_grounding"
+        },
+        "prevHash": "92719c964661050112d9ce3d75b6df02460131d747aefa11cc581de7a95c31da",
+        "hash": "998296e07116934192410dae9fd5acdbee03ce488e8f647e4f0520204534bae0"
+      }
+    ],
+    "total": 35,
+    "cursor": null
+  }
+}

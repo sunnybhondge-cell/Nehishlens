@@ -1,0 +1,21 @@
+{
+  "ts": "2026-09-08T14:24:28.773Z",
+  "method": "GET",
+  "path": "/cortex/context?screen=today&lens=ops",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/cortex/context?screen=today&lens=ops",
+  "lens": "ops",
+  "status": 200,
+  "ok": true,
+  "durationMs": 57,
+  "responseBody": {
+    "screen": "today",
+    "lens": "ops",
+    "context": "Today · 28-Jul · overnight window",
+    "message": "Two things are open. The SLA projection is the only one with a clock on it — the uncaptured resolutions can wait for the day shift, but not past Friday.",
+    "suggestions": [
+      "Draft the shift handover",
+      "Why was EOD 38m late?",
+      "Show this week’s corpus additions"
+    ]
+  }
+}

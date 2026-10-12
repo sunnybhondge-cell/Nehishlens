@@ -1,0 +1,60 @@
+{
+  "ts": "2026-09-02T15:59:55.050Z",
+  "method": "POST",
+  "path": "/cortex/ask",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/cortex/ask",
+  "lens": "ops",
+  "status": 200,
+  "ok": true,
+  "durationMs": 51,
+  "requestBody": {
+    "question": "What could not be verified?",
+    "context": {
+      "screen": "incident-detail",
+      "lens": "ops",
+      "objectId": null
+    }
+  },
+  "responseBody": {
+    "answerId": "ANS-00033",
+    "question": "What could not be verified?",
+    "askedAt": "2026-09-02T21:29:54+05:30",
+    "confidence": "partial",
+    "confidencePct": 74,
+    "answer": "Three of the six sponsors have not reported for 28-Jul, and they carry 38% of the return variance. The 51% figure is therefore computed on partial data. I will not call this a genuine spike until those three report — the same pattern appeared on 14-Jul and resolved once the missing files arrived.",
+    "citations": [
+      {
+        "citationId": "cit-b58ac8dc",
+        "label": "NACH return file · 28-Jul",
+        "sourceId": "src-nach-returns",
+        "resolvable": true
+      },
+      {
+        "citationId": "cit-7c612174",
+        "label": "30d baseline",
+        "sourceId": "src-nach-returns",
+        "resolvable": true
+      },
+      {
+        "citationId": "cit-c438a2c0",
+        "label": "holiday calendar",
+        "sourceId": "src-holiday-calendar",
+        "resolvable": true
+      }
+    ],
+    "notVerified": [
+      "Sponsor C status",
+      "Sponsor D status",
+      "Sponsor F status"
+    ],
+    "threshold": {
+      "refuseBelowConfidence": 70,
+      "applied": false
+    },
+    "context": {
+      "screen": "incident-detail",
+      "lens": "ops",
+      "objectId": null
+    }
+  }
+}

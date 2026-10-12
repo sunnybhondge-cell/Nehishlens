@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { HashRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Rail } from './components/Rail';
 import { Topbar } from './components/Topbar';
@@ -18,6 +18,7 @@ import { DbConsole } from './screens/DbConsole';
 import { Settings } from './screens/Settings';
 import { Cortex } from './screens/Cortex';
 import { useConnectionProbe } from './hooks/useConnection';
+import { useCitationIndex } from './hooks/useCitations';
 import { useAuth, LENS_LANDING } from './context/AuthContext';
 import { useLens } from './context/LensContext';
 import { isRouteAllowed } from './nav';
@@ -31,8 +32,22 @@ function RouteGuard() {
   return <Navigate to={LENS_LANDING[lens]} replace />;
 }
 
+/**
+ * v12 deep links put Sources under Corpus (`#/corpus/sources`,
+ * `#/corpus/sources/:id`, `?q=` / `?state=`). This app's canonical route is
+ * `/sources`; redirect so a link copied from the prototype still resolves,
+ * keeping the query string.
+ */
+function CorpusSourcesRedirect() {
+  const { id } = useParams<{ id: string }>();
+  const { search } = useLocation();
+  return <Navigate to={`/sources${id ? `/${id}` : ''}${search}`} replace />;
+}
+
 function Shell() {
   const { online } = useConnectionProbe();
+  // Citations index once at boot; every <Cite> chip resolves against it locally.
+  useCitationIndex();
   const incidents = useQuery({
     queryKey: ['incidents'],
     queryFn: () => IncidentsApi.list(),
@@ -60,6 +75,8 @@ function Shell() {
             <Route path="/audit" element={<Audit />} />
             <Route path="/audit/packs/new" element={<PackBuilder />} />
             <Route path="/corpus" element={<Corpus />} />
+            <Route path="/corpus/sources" element={<CorpusSourcesRedirect />} />
+            <Route path="/corpus/sources/:id" element={<CorpusSourcesRedirect />} />
             <Route path="/corpus/:id" element={<ResolutionDetail />} />
             <Route path="/sources" element={<Sources />} />
             <Route path="/sources/:id" element={<Sources />} />

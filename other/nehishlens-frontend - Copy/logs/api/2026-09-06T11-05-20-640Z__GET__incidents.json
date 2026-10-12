@@ -1,0 +1,274 @@
+{
+  "ts": "2026-09-06T11:05:20.640Z",
+  "method": "GET",
+  "path": "/incidents",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/incidents",
+  "lens": "exec",
+  "status": 200,
+  "ok": true,
+  "durationMs": 68,
+  "responseBody": {
+    "items": [
+      {
+        "id": "INC-2261",
+        "title": "CKYC upload failed — checksum mismatch on sponsor response file",
+        "system": "FCUBS 14.7",
+        "branch": "0031",
+        "owner": "vishal.d",
+        "severity": "crit",
+        "openedAt": "28 Jul 2026 · 09:14:02",
+        "slaAt": "13:14",
+        "stage": "acting",
+        "signatureId": "sig-748195b0",
+        "impact": "Blocks the CKYC batch upload for branch 0031. 214 pending records held past today's regulatory submission window if unresolved by 13:14.",
+        "diagnosis": {
+          "text": "Sponsor changed the response-file layout on 27-Jul; the checksum routine still computes over the old field order, so every file since fails validation even though the underlying data is fine.",
+          "confidence": "grounded",
+          "confidencePct": 96,
+          "notVerified": [],
+          "citations": [
+            {
+              "label": "sponsor file · 28-Jul"
+            },
+            {
+              "label": "CKYC spec §4.2"
+            },
+            {
+              "label": "validation log · 28-Jul"
+            }
+          ]
+        },
+        "pastFix": {
+          "id": "res#1198",
+          "match": 96,
+          "appliedDate": "09-Jul",
+          "reuseCount": 3
+        },
+        "proposer": "vishal.d",
+        "requiredApprover": "r.edwards",
+        "actionSteps": [
+          "Re-map the checksum routine to the current field order (spec §4.2, rev 3)",
+          "Re-run validation against the held batch",
+          "Release the batch to CKYC intake"
+        ],
+        "externalInstructions": "Apply the field-order patch in the CKYC adapter config from Ops Console → CKYC → Config (outside NehishLens), then re-run validation from Ops Console → CKYC → Re-validate.",
+        "loop": {
+          "stage": "acting",
+          "approved": false,
+          "verified": null,
+          "remembered": false,
+          "log": [
+            {
+              "t": "09:14:02",
+              "who": "system",
+              "what": "Incident observed, diagnosis started"
+            },
+            {
+              "t": "09:14:18",
+              "who": "system",
+              "what": "Diagnosis produced — Grounded 96%, past-fix match found"
+            }
+          ]
+        },
+        "confidence": "grounded",
+        "confidencePct": 96,
+        "notVerified": [],
+        "evidence": [
+          {
+            "label": "sponsor file · 28-Jul",
+            "citationId": "cit-b25356b6",
+            "sourceId": "src-sponsor-files",
+            "resolvable": true
+          },
+          {
+            "label": "CKYC spec §4.2",
+            "citationId": "cit-b9552e71",
+            "sourceId": "src-ckyc-spec",
+            "resolvable": true
+          },
+          {
+            "label": "validation log · 28-Jul",
+            "citationId": "cit-2d829aff",
+            "sourceId": "src-ckyc-validation-logs",
+            "resolvable": true
+          }
+        ]
+      },
+      {
+        "id": "INC-2214",
+        "title": "GLHANDOFF stalled — uncommitted PENINT retry session",
+        "system": "FCUBS 14.7",
+        "branch": "0031",
+        "owner": "vishal.d",
+        "severity": "crit",
+        "openedAt": "28 Jul 2026 · 01:08:42",
+        "slaAt": "BOD 06:00",
+        "stage": "remembered",
+        "signatureId": "sig-4e962ced",
+        "impact": "The overnight GLHANDOFF stage ran 60 minutes against a 22-minute expectation. GLPOST and RECON were temporarily blocked, but BOD completed inside the deadline window.",
+        "diagnosis": {
+          "text": "A PENINT retry left an uncommitted session holding a row lock. GLHANDOFF waited on that lock until the session was terminated and the checkpoint resumed.",
+          "confidence": "grounded",
+          "confidencePct": 94,
+          "notVerified": [],
+          "citations": [
+            {
+              "label": "run log · 01:08–01:46"
+            },
+            {
+              "label": "checkpoint CKPT_0031_0728_04"
+            },
+            {
+              "label": "EOD run · 28-Jul"
+            }
+          ]
+        },
+        "pastFix": {
+          "id": "res#1204",
+          "match": 94,
+          "appliedDate": "28-Jul",
+          "reuseCount": 2
+        },
+        "proposer": "vishal.d",
+        "requiredApprover": "r.edwards",
+        "actionSteps": [
+          "Terminate the orphaned PENINT session",
+          "Resume GLHANDOFF from checkpoint CKPT_0031_0728_04",
+          "Verify downstream GLPOST and RECON completion"
+        ],
+        "externalInstructions": "This historical incident was resolved in the bank’s existing operations tooling. NehishLens records evidence, approval and verification; it does not execute the bank-system change in Phase 1.",
+        "loop": {
+          "stage": "remembered",
+          "approved": true,
+          "verified": "pass",
+          "remembered": true,
+          "log": [
+            {
+              "t": "01:08:42",
+              "who": "system",
+              "what": "Incident observed; GLHANDOFF exceeded expected duration"
+            },
+            {
+              "t": "01:46:03",
+              "who": "vishal.d",
+              "what": "Orphaned PENINT session terminated; checkpoint resumed"
+            },
+            {
+              "t": "01:52:14",
+              "who": "r.edwards",
+              "what": "Verification passed; resolution approved into memory"
+            }
+          ]
+        },
+        "confidence": "grounded",
+        "confidencePct": 94,
+        "notVerified": [],
+        "evidence": [
+          {
+            "label": "run log · 01:08–01:46",
+            "citationId": "cit-610193d3",
+            "sourceId": "src-run-logs",
+            "resolvable": true
+          },
+          {
+            "label": "checkpoint CKPT_0031_0728_04",
+            "citationId": "cit-2315d607",
+            "sourceId": "src-run-logs",
+            "resolvable": true
+          },
+          {
+            "label": "EOD run · 28-Jul",
+            "citationId": "cit-c104580c",
+            "sourceId": "src-run-logs",
+            "resolvable": true
+          }
+        ]
+      },
+      {
+        "id": "INC-2287",
+        "title": "NACH returns 51% above 30-day mean",
+        "system": "FCUBS 14.7",
+        "branch": "all branches",
+        "owner": "unassigned",
+        "severity": "warn",
+        "openedAt": "28 Jul 2026 · 07:12:44",
+        "slaAt": "—",
+        "stage": "understood",
+        "signatureId": "sig-a5d3647d",
+        "impact": "No batch is blocked yet. If the trend holds past midday, tomorrow's reconciliation queue grows past its normal SLA window.",
+        "diagnosis": {
+          "text": "Most likely a holiday backlog — 27-Jul was a regional holiday for 2 of 6 sponsors. Three sponsors have not reported status and they account for 38% of the variance, so this can't be called yet.",
+          "confidence": "partial",
+          "confidencePct": null,
+          "notVerified": [
+            "Sponsor C status",
+            "Sponsor D status",
+            "Sponsor E status"
+          ],
+          "citations": [
+            {
+              "label": "NACH return file · 28-Jul"
+            },
+            {
+              "label": "30d baseline"
+            },
+            {
+              "label": "holiday calendar"
+            }
+          ]
+        },
+        "pastFix": null,
+        "proposer": null,
+        "requiredApprover": null,
+        "actionSteps": [],
+        "externalInstructions": null,
+        "loop": {
+          "stage": "understood",
+          "approved": false,
+          "verified": null,
+          "remembered": false,
+          "log": [
+            {
+              "t": "07:12:44",
+              "who": "system",
+              "what": "Incident observed, diagnosis started"
+            },
+            {
+              "t": "07:13:02",
+              "who": "cortex",
+              "what": "Refused to call it without 3 unreported sponsors — logged as a refusal"
+            }
+          ]
+        },
+        "confidence": "partial",
+        "confidencePct": null,
+        "notVerified": [
+          "Sponsor C status",
+          "Sponsor D status"
+        ],
+        "evidence": [
+          {
+            "label": "NACH return file · 28-Jul",
+            "citationId": "cit-b58ac8dc",
+            "sourceId": "src-nach-returns",
+            "resolvable": true
+          },
+          {
+            "label": "30d baseline",
+            "citationId": "cit-7c612174",
+            "sourceId": "src-nach-returns",
+            "resolvable": true
+          },
+          {
+            "label": "holiday calendar",
+            "citationId": "cit-c438a2c0",
+            "sourceId": "src-holiday-calendar",
+            "resolvable": true
+          }
+        ]
+      }
+    ],
+    "total": 3,
+    "cursor": null
+  }
+}

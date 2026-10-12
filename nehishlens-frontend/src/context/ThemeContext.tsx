@@ -26,6 +26,9 @@ interface ThemeContextValue {
 const STORAGE_KEY = 'nehishlens.theme.v2';
 
 function readStored(): Theme {
+  // v12: `?theme=light|dark` (before the hash) wins, so a theme can be linked to directly.
+  const q = /[?&]theme=(light|dark)/.exec(window.location.search)?.[1];
+  if (q === 'light' || q === 'dark') return q;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw === 'light' || raw === 'dark') return raw;

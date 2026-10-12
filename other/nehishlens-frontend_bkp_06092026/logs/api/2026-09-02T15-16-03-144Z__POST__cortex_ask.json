@@ -1,0 +1,37 @@
+{
+  "ts": "2026-09-02T15:16:03.144Z",
+  "method": "POST",
+  "path": "/cortex/ask",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/cortex/ask",
+  "lens": "ops",
+  "status": 200,
+  "ok": true,
+  "durationMs": 102,
+  "requestBody": {
+    "question": "Why did PENINT retry?",
+    "context": {
+      "screen": "eod",
+      "lens": "ops",
+      "objectId": "INC-2261"
+    }
+  },
+  "responseBody": {
+    "answerId": "ANS-00024",
+    "question": "Why did PENINT retry?",
+    "askedAt": "2026-09-02T20:46:02+05:30",
+    "confidence": "refused",
+    "confidencePct": null,
+    "answer": "I do not hold grounded material for that. Rather than compose something plausible, I am declining — what I would produce could not be traced to a source, and an answer you cannot check is worse than none.",
+    "citations": [],
+    "notVerified": [],
+    "threshold": {
+      "refuseBelowConfidence": 70,
+      "applied": true
+    },
+    "context": {
+      "screen": "eod",
+      "lens": "ops",
+      "objectId": "INC-2261"
+    }
+  }
+}

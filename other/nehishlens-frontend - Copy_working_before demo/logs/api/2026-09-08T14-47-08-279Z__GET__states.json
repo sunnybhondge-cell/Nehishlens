@@ -1,0 +1,25 @@
+{
+  "ts": "2026-09-08T14:47:08.279Z",
+  "method": "GET",
+  "path": "/_states",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/_states",
+  "lens": "eng",
+  "status": 200,
+  "ok": true,
+  "durationMs": 120,
+  "responseBody": {
+    "states": [
+      "default",
+      "loading",
+      "empty",
+      "partial",
+      "error",
+      "denied",
+      "stale",
+      "zero",
+      "confirmed"
+    ],
+    "howToUse": "?_state=empty on any GET, or the X-Mock-State header.",
+    "note": "Four of the nine states cannot arise from fixture data. This is how a frontend developer builds those branches without waiting for a backend."
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "ts": "2026-09-02T15:59:19.274Z",
+  "method": "GET",
+  "path": "/cortex/context?screen=incidents&lens=ops&objectId=INC-2261",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/cortex/context?screen=incidents&lens=ops&objectId=INC-2261",
+  "lens": "ops",
+  "status": 200,
+  "ok": true,
+  "durationMs": 180,
+  "responseBody": {
+    "screen": "incidents",
+    "lens": "ops",
+    "context": "2 open incidents · branch 0031 · FCUBS 14.7",
+    "message": "INC-2261 has a 96% match and is ready to review. INC-2287 I will not call — three sponsors are unreported and they carry 38% of the variance. The cross-check settles it in two minutes.",
+    "suggestions": [
+      "Show res#1198",
+      "Run the mandate cross-check",
+      "What differs from 09-Jul?"
+    ]
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "ts": "2026-09-08T12:43:19.404Z",
+  "method": "GET",
+  "path": "/sources/src-run-logs",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/sources/src-run-logs",
+  "lens": "exec",
+  "status": 200,
+  "ok": true,
+  "durationMs": 107,
+  "responseBody": {
+    "id": "src-run-logs",
+    "title": "Batch & EOD Run Logs",
+    "type": "log set",
+    "version": "rolling",
+    "dated": "01 Aug 2024 – 28 Jul 2026",
+    "size": "412 GB",
+    "owner": "Ops platform",
+    "system": "FCUBS 14.7 · scheduler",
+    "ingested": "28 Jul 2026 · 04:02 IST",
+    "ingestedDays": 0,
+    "staleAfter": 2,
+    "citedBy": 2940,
+    "status": "partial",
+    "coverage": {
+      "indexed": 723,
+      "total": 727,
+      "unit": "days",
+      "skipped": [
+        {
+          "what": "11–14 Sep 2025 (4 days)",
+          "why": "Log rotation was misconfigured on the DR node and the originals were overwritten before ingestion. These four days cannot be recovered — any question spanning them is answered with the gap stated."
+        }
+      ]
+    },
+    "units": [
+      {
+        "ref": "28-Jul GLHANDOFF",
+        "title": "Run log · 01:08–01:46",
+        "cited": 34
+      },
+      {
+        "ref": "CKPT_0031_0728_04",
+        "title": "Checkpoint record",
+        "cited": 11
+      },
+      {
+        "ref": "90d run history",
+        "title": "Stage duration series",
+        "cited": 140
+      },
+      {
+        "ref": "28-Jul EOD",
+        "title": "Full run · completed 03:12",
+        "cited": 52
+      }
+    ],
+    "lenses": [
+      "ops",
+      "eng",
+      "assure",
+      "exec"
+    ],
+    "note": "Two years of history is what makes a 96% historical match possible. The September 2025 gap is carried into every answer that spans it."
+  }
+}

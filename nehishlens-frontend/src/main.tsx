@@ -4,6 +4,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './lib/queryClient';
 import './styles/legacy.css';
 import './styles/theme-dark.css';
+import './styles/v12.css';
 import './index.css';
 import App from './App.tsx';
 import { ThemeProvider } from './context/ThemeContext';

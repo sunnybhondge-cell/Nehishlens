@@ -1,0 +1,30 @@
+{
+  "ts": "2026-09-05T15:16:59.472Z",
+  "method": "GET",
+  "path": "/config/thresholds",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/config/thresholds",
+  "lens": "ops",
+  "status": 200,
+  "ok": true,
+  "durationMs": 106,
+  "responseBody": {
+    "recallMinMatch": {
+      "value": 85,
+      "unit": "%",
+      "tuned": false,
+      "note": "NOT TUNED. Placeholder until replayed against the bank's own history. Governs whether a past fix is offered at all."
+    },
+    "refuseBelowConfidence": {
+      "value": 70,
+      "unit": "%",
+      "tuned": false,
+      "note": "NOT TUNED. Below this Cortex refuses rather than answers."
+    },
+    "staleSourceDays": {
+      "value": 60,
+      "unit": "days",
+      "tuned": true,
+      "note": "Refresh expectation for a manual. Log sets use 2."
+    }
+  }
+}

@@ -10,7 +10,18 @@ import type { Lens } from './api/config';
  * - ops / eng / assure: see Cortex and Settings; exec does not.
  * - exec: sees only Today and Corpus (Corpus read-only).
  * - DB Console: engineering only.
+ *
+ * Rail size per v12 (§6.1 caps it at seven): ops 6, eng 7, assure 6, exec 2.
+ * Exec's "Today" renders the Executive preview (see screens/Today.tsx), so
+ * `/executive` is a route but not a rail item (CR-05: two destinations).
  */
+export const LENS_LABEL: Record<Lens, string> = {
+  ops: 'Operations',
+  eng: 'Engineering',
+  assure: 'Assurance',
+  exec: 'Executive',
+};
+
 export type Access = 'full' | 'view' | 'none';
 
 export interface NavItem {
@@ -21,7 +32,6 @@ export interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   { to: '/today', label: 'Today', section: 'top' },
-  { to: '/executive', label: 'Executive', section: 'top' },
   { to: '/incidents', label: 'Incidents', section: 'top' },
   { to: '/eod', label: 'EOD & Batch', section: 'top' },
   { to: '/audit', label: 'Audit & Evidence', section: 'top' },

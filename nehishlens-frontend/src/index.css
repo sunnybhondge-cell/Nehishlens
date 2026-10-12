@@ -198,3 +198,20 @@
   .topbar > .chip { display: none; }
   .topbar .connection-chip { max-width: 130px; }
 }
+
+/* Source detail sheet (Corpus · Sources · /sources/:id) — layout from the prototype. */
+.src-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.src-top > .t-label { flex: 1; }
+.src-top .src-access { flex: 1; text-align: right; }
+.src-title { font-size: 20px; line-height: 26px; font-weight: 700; color: var(--text-hi); margin: 14px 0 6px; }
+.src-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 28px; margin-top: 18px; }
+.src-f { padding: 10px 0 12px; border-bottom: 1px solid var(--line); }
+.src-v { margin-top: 6px; font-size: 13.5px; font-weight: 600; color: var(--text-hi); }
+.sev.ok { color: var(--ok); border-color: var(--line); }
+@media (max-width: 820px) {
+  .src-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 520px) {
+  .src-grid { grid-template-columns: 1fr; }
+  .src-top .src-access { flex-basis: 100%; text-align: left; }
+}

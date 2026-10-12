@@ -1,0 +1,60 @@
+{
+  "ts": "2026-09-08T14:48:17.094Z",
+  "method": "GET",
+  "path": "/runs/2026-07-28",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/runs/2026-07-28",
+  "lens": "eng",
+  "status": 200,
+  "ok": true,
+  "durationMs": 50,
+  "responseBody": {
+    "id": "2026-07-28",
+    "cutoff": "23:30",
+    "bodDeadline": "06:00",
+    "completedAt": "03:12",
+    "deviationMinutes": 38,
+    "bodBreached": false,
+    "stages": [
+      {
+        "name": "CUTOFF",
+        "expectedMin": 5,
+        "actualMin": 4,
+        "state": "ok"
+      },
+      {
+        "name": "PENINT",
+        "expectedMin": 18,
+        "actualMin": 21,
+        "state": "ok"
+      },
+      {
+        "name": "GLHANDOFF",
+        "expectedMin": 22,
+        "actualMin": 60,
+        "state": "crit",
+        "note": "Waited on a row lock held by an uncommitted PENINT retry session.",
+        "incidentId": "INC-2214"
+      },
+      {
+        "name": "GLPOST",
+        "expectedMin": 30,
+        "actualMin": 34,
+        "state": "warn",
+        "note": "Blocked behind GLHANDOFF."
+      },
+      {
+        "name": "RECON",
+        "expectedMin": 25,
+        "actualMin": 27,
+        "state": "warn",
+        "note": "Blocked behind GLHANDOFF."
+      },
+      {
+        "name": "BODPREP",
+        "expectedMin": 15,
+        "actualMin": 15,
+        "state": "ok"
+      }
+    ]
+  }
+}

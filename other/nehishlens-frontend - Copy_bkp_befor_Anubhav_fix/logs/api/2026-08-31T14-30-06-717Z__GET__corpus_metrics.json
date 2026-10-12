@@ -1,0 +1,17 @@
+{
+  "ts": "2026-08-31T14:30:06.717Z",
+  "method": "GET",
+  "path": "/corpus/metrics",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/corpus/metrics",
+  "lens": "eng",
+  "status": 200,
+  "ok": true,
+  "durationMs": 61,
+  "responseBody": {
+    "resolutions": 1852,
+    "reuseEventsThisWeek": 15,
+    "recallHitRatePct": 34,
+    "notCaptured": 3,
+    "addedToday": 9
+  }
+}

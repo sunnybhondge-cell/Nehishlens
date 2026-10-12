@@ -1,0 +1,20 @@
+{
+  "ts": "2026-09-08T14:32:09.179Z",
+  "method": "POST",
+  "path": "/actions/act-0001/approve",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/actions/act-0001/approve",
+  "lens": "ops",
+  "status": 403,
+  "ok": false,
+  "durationMs": 89,
+  "requestBody": {
+    "approverId": "s.menon",
+    "outcome": "applied"
+  },
+  "responseBody": {
+    "code": "not_the_named_approver",
+    "message": "This action names r.edwards as its approver. The approver is fixed before the action, not chosen after it.",
+    "retryable": false
+  },
+  "error": "This action names r.edwards as its approver. The approver is fixed before the action, not chosen after it."
+}

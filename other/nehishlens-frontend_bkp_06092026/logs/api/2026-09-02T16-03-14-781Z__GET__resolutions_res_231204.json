@@ -1,0 +1,40 @@
+{
+  "ts": "2026-09-02T16:03:14.781Z",
+  "method": "GET",
+  "path": "/resolutions/res%231204",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/resolutions/res%231204",
+  "lens": "eng",
+  "status": 200,
+  "ok": true,
+  "durationMs": 99,
+  "responseBody": {
+    "id": "res#1204",
+    "slug": "res-1204",
+    "title": "GLHANDOFF stall — uncommitted PENINT retry session",
+    "problem": "EOD stalls at GLHANDOFF after a PENINT retry leaves a session open without committing.",
+    "cause": "The PENINT retry path does not roll back or commit on failure, leaving a row lock that GLHANDOFF then waits on.",
+    "fix": "Terminate the orphaned session, resume the checkpoint, allow GLHANDOFF to complete; flagged for a retry-path fix upstream.",
+    "verification": "GLHANDOFF completed post-termination; downstream GLPOST and RECON cleared without further intervention.",
+    "citations": [
+      {
+        "label": "run log · 01:08–01:46"
+      },
+      {
+        "label": "checkpoint CKPT_0031_0728_04"
+      },
+      {
+        "label": "INC-2214"
+      }
+    ],
+    "approvedBy": "r.edwards",
+    "approvedOn": "28 Jul 2026 · 01:52 IST",
+    "reuseCount": 2,
+    "lastReused": "28 Jul 2026",
+    "confidence": "grounded",
+    "status": "current",
+    "supersedesId": null,
+    "relatedIncidents": [
+      "INC-2214"
+    ]
+  }
+}

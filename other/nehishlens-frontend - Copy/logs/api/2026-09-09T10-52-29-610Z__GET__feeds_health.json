@@ -1,0 +1,41 @@
+{
+  "ts": "2026-09-09T10:52:29.610Z",
+  "method": "GET",
+  "path": "/feeds/health",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/feeds/health",
+  "lens": "eng",
+  "status": 200,
+  "ok": true,
+  "durationMs": 59,
+  "responseBody": {
+    "items": [
+      {
+        "sourceId": "src-run-logs",
+        "name": "Batch & EOD Run Logs",
+        "lastHeartbeat": "2026-07-28T04:02:00+05:30",
+        "state": "ok"
+      },
+      {
+        "sourceId": "src-ckyc-validation-logs",
+        "name": "CKYC Validation Logs",
+        "lastHeartbeat": "2026-07-28T09:20:00+05:30",
+        "state": "ok"
+      },
+      {
+        "sourceId": "src-sponsor-files",
+        "name": "CKYC Sponsor Response Files",
+        "lastHeartbeat": "2026-07-28T09:15:00+05:30",
+        "state": "ok"
+      },
+      {
+        "sourceId": "src-itsm-adapter",
+        "name": "ITSM Adapter Event Stream",
+        "lastHeartbeat": "2026-07-14T09:41:00+05:30",
+        "state": "silent",
+        "note": "No heartbeat for 4h 14m on 14-Jul. A source with no heartbeat cannot prove it was quiet rather than broken, so coverage is not claimed for that window."
+      }
+    ],
+    "total": 4,
+    "cursor": null
+  }
+}

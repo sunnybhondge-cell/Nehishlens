@@ -1,0 +1,27 @@
+{
+  "ts": "2026-09-02T16:02:51.493Z",
+  "method": "GET",
+  "path": "/incidents/INC-2214/recall",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/incidents/INC-2214/recall",
+  "lens": "eng",
+  "status": 200,
+  "ok": true,
+  "durationMs": 94,
+  "responseBody": {
+    "match": {
+      "resolutionId": "res#1204",
+      "matchPct": 94,
+      "appliedDate": "28-Jul",
+      "reuseCount": 2,
+      "title": "GLHANDOFF stall — uncommitted PENINT retry session",
+      "steps": [
+        "Terminate the orphaned PENINT session",
+        "Resume GLHANDOFF from checkpoint CKPT_0031_0728_04",
+        "Verify downstream GLPOST and RECON completion"
+      ]
+    },
+    "thresholdPct": 85,
+    "thresholdTuned": false,
+    "note": "Match score is a placeholder until replayed against real history."
+  }
+}

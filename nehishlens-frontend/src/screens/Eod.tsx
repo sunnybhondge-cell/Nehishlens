@@ -21,7 +21,9 @@ export function Eod() {
         crumb="Operations"
         subtitle={
           run.data
-            ? `cutoff ${run.data.cutoff} → BOD ${run.data.bodDeadline} · completed ${run.data.completedAt}`
+            ? `cutoff ${run.data.cutoff} → BOD ${run.data.bodDeadline} · ${
+                run.data.gap ? 'partial run data' : `completed ${run.data.completedAt}`
+              }`
             : undefined
         }
       />
@@ -31,27 +33,33 @@ export function Eod() {
         {(r) => {
           const maxMin = Math.max(...r.stages.map((s) => Math.max(s.expectedMin, s.actualMin)), 1);
           const sel = r.stages.find((s) => s.name === selected) ?? null;
+          // A gap means the stage list is truncated: the server makes no completion claim,
+          // so neither do we — completion, BOD and stage counts are withheld, not inferred.
+          const partial = !!r.gap;
+          const gapText = !r.gap
+            ? null
+            : typeof r.gap === 'string'
+              ? r.gap
+              : r.gap.message ?? `Missing: ${(r.gap.missing ?? []).join(', ')}`;
           return (
             <>
-              <div className="banner">
-                <strong>Overnight run.</strong> Completed {r.completedAt},{' '}
-                {r.deviationMinutes >= 0 ? `${r.deviationMinutes} minutes over expectation` : 'ahead of expectation'}
-                {r.bodBreached ? ' — BOD deadline breached.' : ', BOD deadline held.'}
-              </div>
-              {r.gap && (
+              {partial ? (
                 <div className="regress" role="status">
-                  <b>Partial run data.</b>{' '}
-                  {typeof r.gap === 'string'
-                    ? r.gap
-                    : r.gap.message ?? `Missing: ${(r.gap.missing ?? []).join(', ')}`}
+                  <b>Partial run data — {r.stages.length} stages returned.</b> {gapText}
+                </div>
+              ) : (
+                <div className="banner">
+                  <strong>Overnight run.</strong> Completed {r.completedAt},{' '}
+                  {r.deviationMinutes >= 0 ? `${r.deviationMinutes} minutes over expectation` : 'ahead of expectation'}
+                  {r.bodBreached ? ' — BOD deadline breached.' : ', BOD deadline held.'}
                 </div>
               )}
 
               <div className="run-summary">
-                <div className={`run-kpi ${r.bodBreached ? 'crit' : 'warn'}`}>
+                <div className={`run-kpi ${partial ? '' : r.bodBreached ? 'crit' : 'warn'}`}>
                   <div className="rk">Run completion</div>
-                  <div className="rv">{r.completedAt}</div>
-                  <div className="rc">+{r.deviationMinutes}m vs expected</div>
+                  <div className="rv">{partial ? 'Not claimed' : r.completedAt}</div>
+                  <div className="rc">{partial ? 'stage data incomplete' : `+${r.deviationMinutes}m vs expected`}</div>
                 </div>
                 <div className="run-kpi warn">
                   <div className="rk">Primary deviation</div>
@@ -64,27 +72,33 @@ export function Eod() {
                     m
                   </div>
                   <div className="rc">
-                    {
-                      r.stages.reduce((a, b) =>
-                        b.actualMin - b.expectedMin > a.actualMin - a.expectedMin ? b : a,
-                      ).name
-                    }
+                    {r.stages.length === 0
+                      ? '—'
+                      : r.stages.reduce((a, b) =>
+                          b.actualMin - b.expectedMin > a.actualMin - a.expectedMin ? b : a,
+                        ).name}
                   </div>
                 </div>
-                <div className={`run-kpi ${r.bodBreached ? 'crit' : 'ok'}`}>
+                <div className={`run-kpi ${partial ? '' : r.bodBreached ? 'crit' : 'ok'}`}>
                   <div className="rk">BOD</div>
-                  <div className="rv">{r.bodBreached ? 'Breached' : 'Held'}</div>
+                  <div className="rv">{partial ? 'Not claimed' : r.bodBreached ? 'Breached' : 'Held'}</div>
                   <div className="rc">deadline {r.bodDeadline}</div>
                 </div>
                 <div className="run-kpi">
                   <div className="rk">Affected stages</div>
                   <div className="rv">{r.stages.filter((s) => s.state !== 'ok').length}</div>
-                  <div className="rc">of {r.stages.length}</div>
+                  <div className="rc">
+                    of {r.stages.length}
+                    {partial ? ' returned' : ''}
+                  </div>
                 </div>
               </div>
 
               <div className="ops-timeline">
-                <PanelHead label="Operational run timeline" chip={`completed ${r.completedAt}`} />
+                <PanelHead
+                  label="Operational run timeline"
+                  chip={partial ? `partial · ${r.stages.length} stages` : `completed ${r.completedAt}`}
+                />
                 <div style={{ fontSize: 11.5, color: 'var(--text-mid)', margin: '4px 0 10px' }}>
                   Expected duration is the light track; actual execution is the accent track. Amber marks
                   deviation, red a critical stall.
@@ -114,37 +128,44 @@ export function Eod() {
                   </button>
                 ))}
 
+                {partial && (
+                  <div className="muted" style={{ fontSize: 11.5, padding: '8px 0' }}>
+                    ⋯ remaining stages not returned — {gapText}
+                  </div>
+                )}
+
                 {sel && <StageFocus stage={sel} />}
               </div>
 
-              <div className="panel">
-                <PanelHead label="Feed coverage — last 24h" />
-                <QueryState q={feeds} what="feed health" skeletonLines={3}>
-                  {(items) => (
-                    <>
-                      {items.map((f) => (
-                        <div className="claim" key={f.sourceId}>
-                          <span className={`pip ${f.state === 'ok' ? 'p-ok' : 'p-warn'}`} />
-                          <span className="lb">{f.name}</span>
-                          <span className="mono t-cap">
-                            {f.state === 'ok'
-                              ? `covered · heartbeat ${f.lastHeartbeat ? new Date(f.lastHeartbeat).toLocaleString() : '—'}`
-                              : (f.note ?? 'silent — no heartbeat')}
-                          </span>
-                        </div>
-                      ))}
-                      <div className="note" style={{ marginTop: 10 }}>
-                        A source with no heartbeat cannot prove it was quiet rather than broken — that
-                        distinction is why an evidence pack can make a completeness claim at all.
-                      </div>
-                    </>
-                  )}
-                </QueryState>
-              </div>
             </>
           );
         }}
       </QueryState>
+
+      <div className="panel">
+        <PanelHead label="Feed coverage — last 24h" />
+        <QueryState q={feeds} what="feed health" skeletonLines={3}>
+          {(items) => (
+            <>
+              {items.map((f) => (
+                <div className="claim" key={f.sourceId}>
+                  <span className={`pip ${f.state === 'ok' ? 'p-ok' : 'p-warn'}`} />
+                  <span className="lb">{f.name}</span>
+                  <span className="mono t-cap">
+                    {f.state === 'ok'
+                      ? `covered · heartbeat ${f.lastHeartbeat ? new Date(f.lastHeartbeat).toLocaleString() : '—'}`
+                      : `${f.state}${f.lastHeartbeat ? ` · last heartbeat ${new Date(f.lastHeartbeat).toLocaleString()}` : ' · no heartbeat on record'}${f.note ? ` — ${f.note}` : ''}`}
+                  </span>
+                </div>
+              ))}
+              <div className="note" style={{ marginTop: 10 }}>
+                A source with no heartbeat cannot prove it was quiet rather than broken — that
+                distinction is why an evidence pack can make a completeness claim at all.
+              </div>
+            </>
+          )}
+        </QueryState>
+      </div>
     </div>
   );
 }

@@ -69,10 +69,10 @@ export function Audit() {
                   <span className="mono t-cap">{v.intact ? 'chain intact' : `broken at seq ${v.brokenAtSeq}`}</span>
                 </div>
                 <div className="claim">
-                  <span className="pip p-ok" />
+                  <span className={`pip ${v.intact ? 'p-ok' : 'p-crit'}`} />
                   <span className="lb">Continuity</span>
                   <span className="mono t-cap">
-                    {v.length} of {v.length} rows
+                    {v.intact ? `${v.length} rows, no gaps` : `rows after seq ${v.brokenAtSeq} unverified`}
                   </span>
                 </div>
                 <div className="claim" style={{ borderColor: 'rgba(245,184,61,.35)' }}>

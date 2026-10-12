@@ -1,0 +1,65 @@
+{
+  "ts": "2026-09-08T12:43:19.360Z",
+  "method": "GET",
+  "path": "/sources/src-fcubs-ops-manual",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/sources/src-fcubs-ops-manual",
+  "lens": "exec",
+  "status": 200,
+  "ok": true,
+  "durationMs": 65,
+  "responseBody": {
+    "id": "src-fcubs-ops-manual",
+    "title": "FLEXCUBE 14.7 Operations Manual",
+    "type": "manual",
+    "version": "v14.7.3",
+    "dated": "02 Jun 2026",
+    "size": "18.6 MB",
+    "owner": "Oracle FSGBU",
+    "system": "FCUBS 14.7",
+    "ingested": "02 Jun 2026 · 23:40 IST",
+    "ingestedDays": 88,
+    "staleAfter": 60,
+    "citedBy": 412,
+    "status": "stale",
+    "coverage": {
+      "indexed": 1186,
+      "total": 1240,
+      "unit": "pages",
+      "skipped": [
+        {
+          "what": "54 annexure pages",
+          "why": "Wide annexure tables exceed the parser column limit and would be indexed with columns misaligned. Indexing them wrongly is worse than declaring them missing."
+        }
+      ]
+    },
+    "units": [
+      {
+        "ref": "§11.2",
+        "title": "End-of-day sequence",
+        "cited": 96
+      },
+      {
+        "ref": "§11.6",
+        "title": "Batch restart and checkpointing",
+        "cited": 74
+      },
+      {
+        "ref": "§14.1",
+        "title": "GL handoff",
+        "cited": 58
+      },
+      {
+        "ref": "§18.3",
+        "title": "Suspense account handling",
+        "cited": 22
+      }
+    ],
+    "lenses": [
+      "ops",
+      "eng",
+      "assure",
+      "exec"
+    ],
+    "note": "Oracle published v14.7.4 on 19 Jul 2026. This catalogue still holds v14.7.3 — answers citing it may be one revision behind."
+  }
+}

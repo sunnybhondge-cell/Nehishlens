@@ -1,0 +1,56 @@
+{
+  "ts": "2026-08-31T14:12:38.548Z",
+  "method": "POST",
+  "path": "/cortex/ask",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/cortex/ask",
+  "lens": "eng",
+  "status": 200,
+  "ok": true,
+  "durationMs": 59,
+  "requestBody": {
+    "question": "What evidence supports this diagnosis?",
+    "context": {
+      "screen": "incident-detail",
+      "lens": "eng",
+      "objectId": "INC-2261"
+    }
+  },
+  "responseBody": {
+    "answerId": "ANS-00020",
+    "question": "What evidence supports this diagnosis?",
+    "askedAt": "2026-08-31T19:42:38+05:30",
+    "confidence": "grounded",
+    "confidencePct": 96,
+    "answer": "Three sources agree. The sponsor file dated 28-Jul carries a different field order to the one the checksum routine computes over; CKYC spec §4.2 rev 3 documents the current order; and the validation log shows every file since the change failing the same check while the underlying records are intact.",
+    "citations": [
+      {
+        "citationId": "cit-b25356b6",
+        "label": "sponsor file · 28-Jul",
+        "sourceId": "src-sponsor-files",
+        "resolvable": true
+      },
+      {
+        "citationId": "cit-b9552e71",
+        "label": "CKYC spec §4.2",
+        "sourceId": "src-ckyc-spec",
+        "resolvable": true
+      },
+      {
+        "citationId": "cit-2d829aff",
+        "label": "validation log · 28-Jul",
+        "sourceId": "src-ckyc-validation-logs",
+        "resolvable": true
+      }
+    ],
+    "notVerified": [],
+    "threshold": {
+      "refuseBelowConfidence": 70,
+      "applied": false
+    },
+    "context": {
+      "screen": "incident-detail",
+      "lens": "eng",
+      "objectId": "INC-2261"
+    }
+  }
+}

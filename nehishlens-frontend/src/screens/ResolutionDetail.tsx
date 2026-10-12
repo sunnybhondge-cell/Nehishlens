@@ -1,10 +1,11 @@
 import { Link, useParams } from 'react-router-dom';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { CorpusApi } from '../api/endpoints';
 import { useHydrated } from '../hooks/useHydrated';
 import { ScreenHeader } from '../components/ScreenHeader';
 import { ApiErrorBanner } from '../components/ApiErrorBanner';
-import { Trace, PanelHead, Conf, CiteRow, QueryState } from '../components/ui';
+import { SignatureSheet } from '../components/SignatureSheet';
+import { Trace, PanelHead, Conf, CiteRow, QueryState, CheckIcon } from '../components/ui';
 import { useAccess } from '../hooks/useAccess';
 import type { ApiError } from '../api/client';
 
@@ -16,16 +17,6 @@ export function ResolutionDetail() {
   const resolution = useHydrated(['resolution', id], () => CorpusApi.resolution(id));
 
   const sigId = resolution.data?.signatureId;
-  const signature = useQuery({
-    queryKey: ['signature', sigId],
-    queryFn: () => CorpusApi.signature(sigId as string),
-    enabled: !!sigId,
-  });
-  const occurrences = useQuery({
-    queryKey: ['signature-occurrences', sigId],
-    queryFn: () => CorpusApi.signatureOccurrences(sigId as string),
-    enabled: !!sigId,
-  });
 
   const reuse = useMutation<unknown, ApiError>({
     mutationFn: () => CorpusApi.reuse(id),
@@ -96,7 +87,7 @@ export function ResolutionDetail() {
                     disabled={reuse.isPending}
                     onClick={() => reuse.mutate()}
                   >
-                    {reuse.isSuccess ? 'Reuse recorded ✓' : 'Record a reuse'}
+                    {reuse.isSuccess ? <>Reuse recorded <CheckIcon /></> : 'Record a reuse'}
                   </button>
                 </div>
               )}
@@ -116,35 +107,7 @@ export function ResolutionDetail() {
               </div>
             )}
 
-            {sigId && (
-              <div className="panel">
-                <PanelHead label="Problem signature" chip={sigId} />
-                {signature.data ? (
-                  <>
-                    <div className="t-cap">
-                      Included: {signature.data.facetsIncluded.join(', ')}
-                    </div>
-                    <div className="t-cap">
-                      Excluded: {signature.data.facetsExcluded.join(', ')}
-                    </div>
-                    <div className="t-cap" style={{ marginTop: 6 }}>
-                      {signature.data.occurrenceCount} occurrence(s). {signature.data.note}
-                    </div>
-                    {occurrences.data && occurrences.data.length > 0 && (
-                      <div className="crow" style={{ marginTop: 8 }}>
-                        {occurrences.data.map((o) => (
-                          <Link key={o.id} className="cite" to={`/incidents/${o.id}`}>
-                            {o.id} · {o.stage}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <p className="muted">Loading signature…</p>
-                )}
-              </div>
-            )}
+            {sigId && <SignatureSheet signatureId={sigId} />}
           </>
         )}
       </QueryState>

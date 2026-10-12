@@ -16,7 +16,8 @@ import { useAuth } from '../context/AuthContext';
 import { useAccess } from '../hooks/useAccess';
 import { ScreenHeader } from '../components/ScreenHeader';
 import { ApiErrorBanner } from '../components/ApiErrorBanner';
-import { Trace, PanelHead, Conf, CiteRow, QueryState } from '../components/ui';
+import { SignatureSheet } from '../components/SignatureSheet';
+import { Trace, PanelHead, Conf, CiteRow, QueryState, CheckIcon } from '../components/ui';
 import type { ApiError } from '../api/client';
 
 /**
@@ -48,6 +49,12 @@ export function IncidentDetail() {
 
   const proposerId = user?.name ?? 'operator';
 
+  // Every write here appends to the hash chain: refresh the trail and the verify length.
+  const invalidateAudit = () => {
+    qc.invalidateQueries({ queryKey: ['audit'] });
+    qc.invalidateQueries({ queryKey: ['audit-verify'] });
+  };
+
   const propose = useMutation<ActionRecord, ApiError>({
     mutationFn: () =>
       ActionsApi.propose({
@@ -57,7 +64,10 @@ export function IncidentDetail() {
         requiredApproverId: approverId || approvers.data?.candidates[0]?.id || '',
         resolutionId: incident.data?.pastFix?.id,
       }),
-    onSuccess: (rec) => setProposed(rec),
+    onSuccess: (rec) => {
+      setProposed(rec);
+      invalidateAudit();
+    },
   });
 
   const approve = useMutation<ApproveActionResponse, ApiError>({
@@ -70,15 +80,8 @@ export function IncidentDetail() {
     onSuccess: (res) => {
       setApproval(res);
       qc.invalidateQueries({ queryKey: ['incident', id] });
-      qc.invalidateQueries({ queryKey: ['audit'] });
+      invalidateAudit();
     },
-  });
-
-  // Re-fetch the receipt as its own record once the action is approved.
-  const receipt = useQuery({
-    queryKey: ['action-receipt', proposed?.id],
-    queryFn: () => ActionsApi.receipt(proposed!.id),
-    enabled: !!approval && !!proposed,
   });
 
   const advance = useMutation<unknown, ApiError, string>({
@@ -140,7 +143,7 @@ export function IncidentDetail() {
                       className={`step ${si < cur ? 'done' : si === cur ? 'active' : ''}`}
                     >
                       <div className="ln" />
-                      <div className="dot">{si + 1}</div>
+                      <div className="dot">{si < cur ? <CheckIcon /> : si + 1}</div>
                       <div className="lbl">{STAGE_LABEL[s]}</div>
                     </div>
                   );
@@ -218,6 +221,8 @@ export function IncidentDetail() {
               </QueryState>
             </div>
 
+            {inc.signatureId && <SignatureSheet signatureId={inc.signatureId} />}
+
             {/* Action surface — gated on /policy/approvers resolving first */}
             <div className="panel">
               <PanelHead label="Action — maker / checker" />
@@ -278,7 +283,7 @@ export function IncidentDetail() {
                       }
                       onClick={() => propose.mutate()}
                     >
-                      {proposed ? 'Proposed ✓' : 'Propose action'}
+                      {proposed ? <>Proposed <CheckIcon /></> : 'Propose action'}
                     </button>
                     <button
                       className="btn btn-ok"
@@ -294,18 +299,7 @@ export function IncidentDetail() {
                   {propose.error && <ApiErrorBanner error={propose.error} what="the proposal" />}
                   {approve.error && <ApiErrorBanner error={approve.error} what="the approval" />}
 
-                  {approval && (
-                    <div className="receipt" style={{ marginTop: 12 }}>
-                      ✓ {approval.action.status} · stage {approval.incidentStage} · receipt{' '}
-                      {approval.receipt.hash ?? approval.receipt.id ?? approval.receipt.actionId}
-                    </div>
-                  )}
-                  {receipt.data && (
-                    <div className="mono t-cap wrap-anywhere" style={{ marginTop: 8 }}>
-                      GET /actions/{proposed?.id}/receipt →{' '}
-                      {JSON.stringify(receipt.data).slice(0, 400)}
-                    </div>
-                  )}
+                  {approval && <ApprovalReceipt approval={approval} />}
                 </>
               )}
             </div>
@@ -324,6 +318,37 @@ export function IncidentDetail() {
           </>
         )}
       </QueryState>
+    </div>
+  );
+}
+
+/**
+ * The receipt exactly as `POST /actions/{id}/approve` returned it — not re-fetched.
+ * A failed outcome is a receipt too (and the stage regresses to understood);
+ * rendering both keeps the chain without holes.
+ */
+function ApprovalReceipt({ approval }: { approval: ApproveActionResponse }) {
+  const r = approval.receipt;
+  const failed = (r.outcome ?? approval.action.outcome) === 'failed';
+  const row = (k: string, v: unknown) =>
+    v === undefined || v === null || v === '' ? null : (
+      <div className="kv">
+        <div className="k">{k}</div>
+        <div className="v mono wrap-anywhere">{String(v)}</div>
+      </div>
+    );
+  return (
+    <div className={failed ? 'regress' : 'receipt'} style={{ marginTop: 12 }}>
+      <b>
+        {failed ? '✕ Verification failed' : <><CheckIcon /> Applied</>} · {approval.action.status} · incident stage now{' '}
+        {STAGE_LABEL[approval.incidentStage] ?? approval.incidentStage}
+      </b>
+      {row('Receipt', r.id)}
+      {row('Condition', r.condition)}
+      {row('Seq', r.seq)}
+      {row('Written', r.writtenAt)}
+      {row('Hash', r.hash)}
+      {row('Prev hash', r.prevHash)}
     </div>
   );
 }
@@ -388,7 +413,7 @@ function CaptureResolutionPanel({
         disabled={!ready || !approvedBy || capture.isPending || capture.isSuccess}
         onClick={() => capture.mutate()}
       >
-        {capture.isSuccess ? 'Captured ✓' : 'Capture resolution'}
+        {capture.isSuccess ? <>Captured <CheckIcon /></> : 'Capture resolution'}
       </button>
       {capture.error && <ApiErrorBanner error={capture.error} what="the resolution capture" />}
     </details>

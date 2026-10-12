@@ -1,0 +1,30 @@
+{
+  "ts": "2026-09-08T14:23:06.075Z",
+  "method": "GET",
+  "path": "/briefing",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/briefing",
+  "lens": "ops",
+  "status": 200,
+  "ok": true,
+  "durationMs": 126,
+  "responseBody": {
+    "date": "2026-07-28",
+    "window": "overnight",
+    "confidence": "grounded",
+    "text": "EOD completed at 03:12, 38 minutes late, BOD unaffected. One stall at GLHANDOFF (01:08–01:46) caused by an uncommitted session from a PENINT retry — matched to a June incident at 94% and resolved in under 5 minutes with checker approval.",
+    "citations": [
+      {
+        "label": "INC-2214",
+        "target": "incidents/INC-2214"
+      },
+      {
+        "label": "EOD run · 28-Jul",
+        "target": "runs/2026-07-28"
+      },
+      {
+        "label": "res#1204",
+        "target": "resolutions/res-1204"
+      }
+    ]
+  }
+}

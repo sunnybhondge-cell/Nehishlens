@@ -1,0 +1,16 @@
+{
+  "ts": "2026-09-05T17:33:41.386Z",
+  "method": "GET",
+  "path": "/sources/src-fcubs-schema",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/sources/src-fcubs-schema",
+  "lens": "exec",
+  "status": 403,
+  "ok": false,
+  "durationMs": 245,
+  "responseBody": {
+    "code": "not_granted",
+    "message": "FCUBS Database Structure — read-only replica is granted to Operations and Engineering only. Your Executive lens does not have read access — not because it is hidden, but because it is not granted.",
+    "retryable": false
+  },
+  "error": "FCUBS Database Structure — read-only replica is granted to Operations and Engineering only. Your Executive lens does not have read access — not because it is hidden, but because it is not granted."
+}

@@ -1,0 +1,14 @@
+{
+  "ts": "2026-09-05T17:21:45.698Z",
+  "method": "GET",
+  "path": "/audit/verify",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/audit/verify",
+  "lens": "exec",
+  "status": 200,
+  "ok": true,
+  "durationMs": 89,
+  "responseBody": {
+    "intact": true,
+    "length": 1
+  }
+}

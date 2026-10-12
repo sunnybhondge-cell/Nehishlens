@@ -79,5 +79,5 @@ export const LENS_LANDING: Record<Lens, string> = {
   ops: '/today',
   eng: '/incidents',
   assure: '/audit',
-  exec: '/executive',
+  exec: '/today', // renders the Executive preview for this lens
 };

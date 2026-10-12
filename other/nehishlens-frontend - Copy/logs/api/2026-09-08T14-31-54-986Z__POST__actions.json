@@ -1,0 +1,37 @@
+{
+  "ts": "2026-09-08T14:31:54.986Z",
+  "method": "POST",
+  "path": "/actions",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/actions",
+  "lens": "ops",
+  "status": 201,
+  "ok": true,
+  "durationMs": 106,
+  "requestBody": {
+    "incidentId": "INC-2261",
+    "steps": [
+      "Re-map the checksum routine to the current field order (spec §4.2, rev 3)",
+      "Re-run validation against the held batch",
+      "Release the batch to CKYC intake"
+    ],
+    "proposerId": "vishal.d",
+    "requiredApproverId": "r.edwards",
+    "resolutionId": "res#1198"
+  },
+  "responseBody": {
+    "id": "act-0001",
+    "incidentId": "INC-2261",
+    "resolutionId": "res#1198",
+    "steps": [
+      "Re-map the checksum routine to the current field order (spec §4.2, rev 3)",
+      "Re-run validation against the held batch",
+      "Release the batch to CKYC intake"
+    ],
+    "proposerId": "vishal.d",
+    "requiredApproverId": "r.edwards",
+    "status": "proposed",
+    "proposedAt": "2026-09-08T20:01:54+05:30",
+    "approvedAt": null,
+    "outcome": null
+  }
+}

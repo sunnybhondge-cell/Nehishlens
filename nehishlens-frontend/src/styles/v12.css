@@ -1,0 +1,187 @@
+/* ============================================================
+   v12 deltas — ported from reference/nehishlens-v12-wired.html
+   (the final prototype). legacy.css is the v8 design system; these
+   are the v9–v12 change requests layered on top, verbatim where the
+   prototype had them. Loaded after legacy.css and theme-dark.css.
+   ============================================================ */
+
+/* CR-01 · compact loop indicator (card size). Same dot language as .loop and the
+   .step dots; adds a one-word stage caption because five bare dots are not readable
+   at card size. Non-interactive by construction. */
+.loop-c{display:inline-flex;align-items:center;gap:7px;}
+.loop-c .loop-dots{display:inline-flex;align-items:center;gap:4px;}
+.loop-c .loop-dots i{width:7px;height:7px;border-radius:50%;background:var(--line);display:inline-block;}
+.loop-c .loop-dots i.d{background:var(--ok);}
+.loop-c .loop-dots i.a{background:var(--lens);box-shadow:0 0 0 2.5px color-mix(in srgb,var(--lens) 20%,transparent);}
+.loop-c .loop-lbl{font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--text-low);}
+.loop-c.is-na .loop-lbl{font-weight:700;letter-spacing:.05em;font-style:italic;}
+.pc-loop{display:flex;align-items:center;}
+
+/* CR-06 · line-drawn check icon */
+.ico-check{flex:0 0 auto;display:inline-block;vertical-align:-1px;}
+.step .dot .ico-check{width:11px;height:11px;}
+
+/* ---------- CR-02 · Knowledge Explorer ---------- */
+.vis-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}
+
+.corpus-tabs{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.ctab{display:inline-flex;align-items:center;height:30px;padding:0 13px;border-radius:8px;border:1px solid var(--line);background:var(--surface);
+  color:var(--text-mid);font:700 11.5px/1 Inter,Arial,sans-serif;cursor:pointer;
+  transition:background 150ms var(--e),border-color 150ms var(--e),color 150ms var(--e);}
+.ctab:hover{border-color:var(--line-strong,#B9C1D0);color:var(--text-hi);}
+.ctab.on{background:var(--lens-soft);border-color:color-mix(in srgb,var(--lens) 38%,var(--line));color:var(--lens-strong);}
+.ctab-cap{font-size:10.5px;color:var(--text-low);margin-left:2px;}
+
+.src-mode{margin-bottom:12px;}
+
+/* a citation that resolves looks openable; one that cannot stays flat and says why */
+.cite-src{cursor:pointer;}
+.cite-src::after{content:'';width:5px;height:5px;border-top:1.4px solid currentColor;border-right:1.4px solid currentColor;transform:rotate(45deg);opacity:.55;margin-left:1px;}
+.cite-src:hover{border-color:var(--lens);color:var(--lens-strong);}
+.cite-derived{cursor:help;opacity:.82;}
+.src-gapline{font-size:11.5px;line-height:17px;color:var(--text-mid);border-left:2px solid var(--warn);
+  padding:7px 0 7px 11px;margin-bottom:13px;}
+.src-gapline b{color:var(--text-hi);}
+
+.src-find{display:inline-flex;align-items:center;}
+.src-find .cin{height:30px;min-width:230px;font-size:11.5px;}
+
+/* Every column here is required by the change request, so at narrow widths the
+   table scrolls rather than dropping one. .tbl clips by default; scoped override. */
+.src-tbl{overflow-x:auto;overflow-y:hidden;}
+.src-tbl table{min-width:900px;}
+.src-tbl th:first-child,.src-tbl td:first-child{min-width:210px;}
+.src-tbl td{vertical-align:top;}
+.src-open{background:none;border:0;padding:0;margin:0;font:700 12.5px/17px Inter,Arial,sans-serif;
+  color:var(--text-hi);text-align:left;cursor:pointer;border-radius:4px;}
+.src-open:hover{color:var(--lens-strong);text-decoration:underline;}
+.src-sub{font-size:10px;color:var(--text-low);margin-top:3px;line-height:14px;}
+.src-sub.warn{color:var(--warn);}
+.src-type{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:99px;
+  border:1px solid var(--line);background:var(--raised);font-size:10px;color:var(--text-mid);text-transform:uppercase;letter-spacing:.05em;}
+
+.src-tag{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 8px;border-radius:99px;
+  font-size:10px;font-weight:800;letter-spacing:.04em;border:1px solid var(--line);color:var(--text-mid);background:var(--raised);}
+.src-tag.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,var(--line));background:color-mix(in srgb,var(--ok) 10%,transparent);}
+.src-tag.partial{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 40%,var(--line));background:color-mix(in srgb,var(--warn) 10%,transparent);}
+.src-tag.stale{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 55%,var(--line));background:color-mix(in srgb,var(--warn) 16%,transparent);}
+.src-tag.denied{color:var(--crit);border-color:color-mix(in srgb,var(--crit) 40%,var(--line));background:color-mix(in srgb,var(--crit) 10%,transparent);}
+
+.cov{display:flex;align-items:center;gap:8px;}
+.cov-bar{position:relative;flex:1;min-width:70px;height:5px;border-radius:99px;background:var(--line);overflow:hidden;display:block;}
+.cov-bar > span{position:absolute;inset:0 auto 0 0;background:var(--ok);border-radius:99px;}
+.cov-pct{font-size:10.5px;color:var(--text-mid);flex:0 0 auto;}
+.cov-lg{max-width:420px;}
+.cov-lg .cov-bar{height:8px;}
+
+.src-title{font-size:17px;font-weight:800;color:var(--text-hi);line-height:24px;margin-top:2px;}
+.src-note{font-size:12px;color:var(--text-mid);line-height:18px;margin-top:6px;}
+
+.kvs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 18px;}
+/* .kv is a justify-between row elsewhere; inside the metadata grid a stacked
+   label/value reads far better at column width. Scoped to .kvs. */
+.kvs .kv{display:block;padding:0 0 9px;border-bottom:1px solid var(--line);}
+.kvs .kv .k{font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-low);}
+.kvs .kv .v{text-align:left;margin-top:3px;font-size:12px;line-height:17px;word-break:break-word;}
+@media(max-width:1280px){.kvs{grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media(max-width:1100px){.kvs{grid-template-columns:repeat(2,minmax(0,1fr));}}
+
+.src-gaps{margin-top:14px;}
+.src-gap{border-left:2px solid var(--warn);padding:8px 0 8px 12px;margin-bottom:10px;}
+.src-gap-what{font:700 11.5px/17px 'JetBrains Mono',monospace;color:var(--warn);}
+.src-gap-why{font-size:11.5px;line-height:17.5px;color:var(--text-mid);margin-top:4px;}
+.receipt-row{margin-top:14px;}
+
+/* ---------- CR-10 · derivation panel ---------- */
+.cite-derive{cursor:pointer;}
+.cite-derive::after{content:'';width:5px;height:5px;border-top:1.4px solid currentColor;border-right:1.4px solid currentColor;transform:rotate(135deg);opacity:.55;margin-left:2px;margin-top:-3px;transition:transform 160ms var(--e);}
+.cite-derive.on::after{transform:rotate(-45deg);margin-top:1px;}
+.cite-derive:hover{border-color:var(--lens);color:var(--lens-strong);}
+.derive{margin-top:14px;}
+.derive-top{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:4px;}
+.derive-fig{display:flex;align-items:baseline;gap:7px;}
+.derive-num{font:800 26px/1 Inter,Arial,sans-serif;color:var(--text-hi);}
+.derive-unit{font-size:11px;color:var(--text-low);}
+.derive-claim{flex:1;min-width:220px;font-size:12.5px;line-height:18px;color:var(--text-mid);}
+.derive-block{padding:11px 0;border-bottom:1px solid var(--line);}
+.derive-block:last-of-type{border-bottom:none;}
+.derive-k{font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text-low);margin-bottom:5px;}
+.derive-v{font-size:12.5px;line-height:19px;color:var(--text-mid);}
+.derive-close{flex:0 0 auto;}
+
+/* ============================================================
+   CR-08 · quiet buttons render as buttons (ruled 29 Aug 2026).
+   Quiet still means a button: same fill and border as .btn, one
+   step quieter label. Overrides theme-dark.css's transparent rule.
+   ============================================================ */
+.btn-q{
+  background:var(--raised)!important;
+  border-color:var(--line-strong,#CBD1DD)!important;
+  color:var(--text-mid)!important;
+}
+html[data-theme="dark"] .btn-q:hover{
+  background:#202B38!important;
+  border-color:var(--line-strong)!important;
+  color:var(--text-hi)!important;
+}
+html[data-theme="light"] .btn-q:hover{
+  background:var(--raised)!important;
+  border-color:var(--line-strong,#B9C1D0)!important;
+  color:var(--text-hi)!important;
+}
+.btn-q:disabled{opacity:.42!important;}
+
+/* CR-07 · light counterpart for the brand mark (dark lives in theme-dark.css). */
+html[data-theme="light"] .rail-logo.brand-mark{
+  background:#FFFFFF!important;
+  border-color:rgba(16,24,40,.14)!important;
+  box-shadow:0 2px 8px rgba(16,24,40,.12)!important;
+}
+
+/* ============================================================
+   CR-04 · top bar must yield instead of overflowing.
+   Identity, environment and the action count hold their width;
+   explanatory and vanity chrome truncates, then drops out.
+   Holds 1280 → 1920 (§2.1 target 1440).
+   ============================================================ */
+.topbar{min-width:0;}
+.topbar .lens-review{flex:0 0 auto;min-width:0;}
+.topbar .lens-review .lens-tab,
+.topbar .lens-title,
+.topbar .chip,
+.topbar .attention-btn,
+.topbar .kbd,
+.topbar .av{flex:0 0 auto;white-space:nowrap;}
+.topbar .lens-source,
+.topbar .ticker{min-width:0;flex:0 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar .ticker{max-width:260px;}
+
+@media (max-width:1700px){ .topbar .ticker{max-width:190px;} }
+@media (max-width:1560px){ .topbar .lens-source{display:none;} }
+@media (max-width:1440px){ .topbar .lens-title{display:none;} .topbar .ticker{max-width:150px;} }
+@media (max-width:1340px){ .topbar .ticker{display:none;} }
+@media (max-width:1240px){ .topbar .kbd{display:none;} }
+@media (max-width:1180px){
+  .topbar .lens-review{flex:0 1 auto;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;}
+  .topbar .lens-review::-webkit-scrollbar{display:none;}
+}
+/* Top bar at the minimum supported width (1280): the lens switcher is review
+   chrome, so it yields first; the health chip truncates. */
+@media (max-width: 1400px) {
+  .topbar { gap: 6px; }
+  .lens-review { flex: 0 1 auto; min-width: 0; overflow: hidden; }
+  .lens-review .t-cap { display: none; }
+  .topbar .lens-review .lens-tab { padding-left: 7px; padding-right: 7px; font-size: 11px; letter-spacing: 0; }
+}
+
+/* loading skeleton row (catalogue / derivation) */
+.sk-row{height:34px;border-radius:7px;margin-bottom:9px;
+  background:linear-gradient(90deg,var(--raised) 0%,var(--surface-2,var(--line)) 50%,var(--raised) 100%);
+  background-size:200% 100%;animation:sk 1.3s var(--e) infinite;}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@media(prefers-reduced-motion:reduce){.sk-row{animation:none;}}
+
+/* Final prototype hides the .trace provenance strips and prototype-only toggles
+   from the client-facing build. The markup stays (it documents provenance). */
+.trace{display:none!important}
+.protoToggle{display:none!important}

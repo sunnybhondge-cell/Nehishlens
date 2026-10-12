@@ -1,0 +1,21 @@
+{
+  "ts": "2026-09-02T15:16:01.981Z",
+  "method": "GET",
+  "path": "/cortex/context?screen=eod&lens=ops&objectId=INC-2261",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/cortex/context?screen=eod&lens=ops&objectId=INC-2261",
+  "lens": "ops",
+  "status": 200,
+  "ok": true,
+  "durationMs": 109,
+  "responseBody": {
+    "screen": "eod",
+    "lens": "ops",
+    "context": "EOD run 28-Jul · 8 stages · 1 incident",
+    "message": "GLHANDOFF ran 38 minutes over. Everything downstream recovered without intervention once the lock cleared.",
+    "suggestions": [
+      "Compare to last 7 nights",
+      "Why did PENINT retry?",
+      "Project tomorrow’s window"
+    ]
+  }
+}

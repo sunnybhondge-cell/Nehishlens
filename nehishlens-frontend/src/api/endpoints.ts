@@ -78,7 +78,8 @@ export interface DerivationResponse {
 export interface PriorityItem {
   tone: 'warning' | 'positive' | 'critical' | string;
   label: string;
-  stage: Stage;
+  /** null = not a loop object (a trend or a metric), e.g. exec's efficiency cards. */
+  stage: Stage | null;
   title: string;
   meta?: string;
   why?: string;
@@ -86,11 +87,13 @@ export interface PriorityItem {
   target?: string;
 }
 export interface BriefingResponse {
-  date: string;
-  window: string;
-  confidence: Confidence;
-  text: string;
+  date: string | null;
+  window?: string;
+  confidence?: Confidence;
+  /** null in the empty state — then `note` carries the server's explanation. */
+  text: string | null;
   citations: Citation[];
+  note?: string;
 }
 
 export const TodayApi = {
@@ -164,10 +167,18 @@ export interface ObserveIncidentPayload {
   impact?: string;
 }
 
+/** POST /incidents — the message is fingerprinted; a known fingerprint arrives already understood. */
+export interface ObserveIncidentResponse {
+  incident: IncidentDetailResponse;
+  recognised: boolean;
+  resolution?: { id?: string; title?: string; [key: string]: unknown } | null;
+  note?: string;
+}
+
 export const IncidentsApi = {
   list: (stage?: string) =>
     api.list<IncidentSummary>(`/incidents${stage ? `?stage=${encodeURIComponent(stage)}` : ''}`),
-  create: (payload: ObserveIncidentPayload) => api.post<IncidentDetailResponse>('/incidents', payload),
+  create: (payload: ObserveIncidentPayload) => api.post<ObserveIncidentResponse>('/incidents', payload),
   detail: (incidentId: string) =>
     api.get<IncidentDetailResponse>(`/incidents/${encodeURIComponent(incidentId)}`),
   advanceLoop: (incidentId: string, toStage: string, actorId: string, reason?: string) =>
@@ -218,6 +229,11 @@ export interface ActionRecord {
 export interface Receipt {
   id?: string;
   actionId?: string;
+  seq?: number;
+  outcome?: 'applied' | 'failed' | string;
+  condition?: string;
+  prevHash?: string;
+  writtenAt?: string;
   hash?: string;
   chain?: unknown[];
   [key: string]: unknown;
@@ -402,6 +418,7 @@ export interface SourceSummary {
   coverage?: SourceCoverage;
   units?: SourceUnit[];
   lenses?: string[];
+  note?: string;
   /** Set locally by Sources.tsx when a per-lens detail call 403s. */
   denied?: boolean;
   deniedReason?: string;
@@ -409,7 +426,9 @@ export interface SourceSummary {
 export type SourceDetail = SourceSummary;
 
 export const SourcesApi = {
-  list: (q?: string) => api.list<SourceSummary>(`/sources${q ? `?q=${encodeURIComponent(q)}` : ''}`),
+  // `mockState` carries the v12 deep-linkable `?state=loading|empty|error` view state.
+  list: (q?: string, mockState?: string) =>
+    api.list<SourceSummary>(`/sources${q ? `?q=${encodeURIComponent(q)}` : ''}`, { mockState }),
   // Can 403 not_granted per lens — fan out through fetchAllSettled (rule 5).
   detail: (sourceId: string) => api.get<SourceDetail>(`/sources/${encodeURIComponent(sourceId)}`),
   citations: () => api.list<Citation>('/citations'),

@@ -1,0 +1,57 @@
+{
+  "ts": "2026-09-05T17:21:45.698Z",
+  "method": "GET",
+  "path": "/derivations/hours-saved",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/derivations/hours-saved",
+  "lens": "exec",
+  "status": 200,
+  "ok": true,
+  "durationMs": 89,
+  "responseBody": {
+    "id": "hours-saved",
+    "metric": "Hours saved",
+    "value": "3.9",
+    "unit": "hours this week",
+    "delta": "+0.7",
+    "claim": "Time not spent re-diagnosing a problem the bank has already solved.",
+    "formula": "For each incident closed against a corpus match in the window: (first-occurrence MTTR for that signature) − (actual time to resolution). Summed across the window.",
+    "method": "Arithmetic over recorded timestamps. Not a model, not an estimate, and not a projection.",
+    "window": "7 days to 28 Jul 2026",
+    "recomputed": "28 Jul 2026 · 04:02 IST",
+    "recomputedDays": 0,
+    "inputs": [
+      {
+        "label": "15 reuse events this week",
+        "from": "corpus",
+        "note": "Applied and verified, not merely displayed."
+      },
+      {
+        "label": "per-signature first-occurrence MTTR",
+        "from": "src-run-logs",
+        "note": "Drawn from two years of batch and EOD run logs."
+      },
+      {
+        "label": "actual time to resolution",
+        "from": "src-run-logs",
+        "note": "Timestamps on the incident record itself."
+      }
+    ],
+    "baselineRule": "The baseline is the FIRST occurrence of that exact signature, not a fleet average. A signature seen only once contributes zero — there is nothing to have saved against.",
+    "excludes": [
+      {
+        "what": "Incidents resolved without a corpus match",
+        "why": "There is no first-occurrence baseline to compare them against, so they contribute nothing rather than an assumed value."
+      },
+      {
+        "what": "3 signatures spanning 11–14 Sep 2025",
+        "why": "Their first occurrence falls inside the run-log gap on the DR node, so no baseline exists for them. They are excluded entirely rather than back-filled from a neighbouring signature.",
+        "source": "src-run-logs"
+      },
+      {
+        "what": "Work done by people outside NehishLens",
+        "why": "NehishLens records evidence, approval and verification; it does not observe what happens in the bank’s own tooling, so it does not claim time saved there."
+      }
+    ],
+    "confirmed": "Reconciled against the incident record at 04:02. Every term in the sum traces to a timestamped row."
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "ts": "2026-09-05T16:26:29.036Z",
+  "method": "GET",
+  "path": "/sources/src-sanctions-ref",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/sources/src-sanctions-ref",
+  "lens": "ops",
+  "status": 403,
+  "ok": false,
+  "durationMs": 120,
+  "responseBody": {
+    "code": "not_granted",
+    "message": "Sanctions & Watchlist Screening Reference is granted to Engineering and Assurance only. Your Operations lens does not have read access — not because it is hidden, but because it is not granted.",
+    "retryable": false
+  },
+  "error": "Sanctions & Watchlist Screening Reference is granted to Engineering and Assurance only. Your Operations lens does not have read access — not because it is hidden, but because it is not granted."
+}

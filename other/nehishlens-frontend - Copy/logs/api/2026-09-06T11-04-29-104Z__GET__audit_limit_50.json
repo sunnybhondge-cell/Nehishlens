@@ -1,0 +1,27 @@
+{
+  "ts": "2026-09-06T11:04:29.104Z",
+  "method": "GET",
+  "path": "/audit?limit=50",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/audit?limit=50",
+  "lens": "eng",
+  "status": 200,
+  "ok": true,
+  "durationMs": 114,
+  "responseBody": {
+    "items": [
+      {
+        "seq": 1,
+        "at": "2026-09-05T23:00:42+05:30",
+        "actor": "system",
+        "actorKind": "ai",
+        "verb": "store.reset",
+        "object": "store",
+        "payload": {},
+        "prevHash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "hash": "5508d2b710e64bc470079e1b211d9c58e21011e59d0559e422345dc19d659a75"
+      }
+    ],
+    "total": 1,
+    "cursor": null
+  }
+}

@@ -1,0 +1,477 @@
+{
+  "ts": "2026-09-08T14:36:38.207Z",
+  "method": "GET",
+  "path": "/sources",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/sources",
+  "lens": "exec",
+  "status": 200,
+  "ok": true,
+  "durationMs": 71,
+  "responseBody": {
+    "items": [
+      {
+        "id": "src-ckyc-spec",
+        "title": "CKYC Sponsor Interface Specification",
+        "type": "spec",
+        "version": "rev 3",
+        "dated": "14 May 2026",
+        "size": "2.4 MB",
+        "owner": "Sponsor consortium",
+        "system": "CKYC intake",
+        "ingested": "14 May 2026 · 02:10 IST",
+        "ingestedDays": 75,
+        "staleAfter": 180,
+        "citedBy": 128,
+        "status": "partial",
+        "coverage": {
+          "indexed": 41,
+          "total": 47,
+          "unit": "sections",
+          "skipped": [
+            {
+              "what": "§6.1–§6.6 (6 sections)",
+              "why": "Scanned image pages with no text layer. OCR is not enabled for spec documents, so these sections are not searchable and cannot be cited."
+            }
+          ]
+        },
+        "units": [
+          {
+            "ref": "§4.2",
+            "title": "Response file field order",
+            "cited": 64
+          },
+          {
+            "ref": "§4.3",
+            "title": "Checksum computation",
+            "cited": 31
+          },
+          {
+            "ref": "§5.1",
+            "title": "Rejection codes",
+            "cited": 18
+          },
+          {
+            "ref": "§7.4",
+            "title": "Resubmission window",
+            "cited": 9
+          }
+        ],
+        "lenses": [
+          "ops",
+          "eng",
+          "assure",
+          "exec"
+        ],
+        "note": "The field-order change behind INC-2261 is described in §4.2 rev 3. The adapter still computes over the rev 2 order."
+      },
+      {
+        "id": "src-fcubs-ops-manual",
+        "title": "FLEXCUBE 14.7 Operations Manual",
+        "type": "manual",
+        "version": "v14.7.3",
+        "dated": "02 Jun 2026",
+        "size": "18.6 MB",
+        "owner": "Oracle FSGBU",
+        "system": "FCUBS 14.7",
+        "ingested": "02 Jun 2026 · 23:40 IST",
+        "ingestedDays": 88,
+        "staleAfter": 60,
+        "citedBy": 412,
+        "status": "stale",
+        "coverage": {
+          "indexed": 1186,
+          "total": 1240,
+          "unit": "pages",
+          "skipped": [
+            {
+              "what": "54 annexure pages",
+              "why": "Wide annexure tables exceed the parser column limit and would be indexed with columns misaligned. Indexing them wrongly is worse than declaring them missing."
+            }
+          ]
+        },
+        "units": [
+          {
+            "ref": "§11.2",
+            "title": "End-of-day sequence",
+            "cited": 96
+          },
+          {
+            "ref": "§11.6",
+            "title": "Batch restart and checkpointing",
+            "cited": 74
+          },
+          {
+            "ref": "§14.1",
+            "title": "GL handoff",
+            "cited": 58
+          },
+          {
+            "ref": "§18.3",
+            "title": "Suspense account handling",
+            "cited": 22
+          }
+        ],
+        "lenses": [
+          "ops",
+          "eng",
+          "assure",
+          "exec"
+        ],
+        "note": "Oracle published v14.7.4 on 19 Jul 2026. This catalogue still holds v14.7.3 — answers citing it may be one revision behind."
+      },
+      {
+        "id": "src-fcubs-schema",
+        "title": "FCUBS Database Structure — read-only replica",
+        "type": "schema",
+        "version": "snapshot",
+        "dated": "26 Aug 2026",
+        "size": "96 MB · 4,318 objects",
+        "owner": "Core banking DBA",
+        "system": "FCUBS 14.7",
+        "ingested": "26 Aug 2026 · 01:05 IST",
+        "ingestedDays": 3,
+        "staleAfter": 7,
+        "citedBy": 203,
+        "status": "partial",
+        "coverage": {
+          "indexed": 4102,
+          "total": 4318,
+          "unit": "objects",
+          "skipped": [
+            {
+              "what": "216 PL/SQL bodies",
+              "why": "Wrapped (encrypted) package bodies. The signatures are indexed; the logic inside them is not readable, so dependency answers derived from them are incomplete and say so."
+            }
+          ]
+        },
+        "units": [
+          {
+            "ref": "CH_ACCT_SUSPENSE",
+            "title": "Table · 7 direct dependents",
+            "cited": 41
+          },
+          {
+            "ref": "GL_SUSPENSE_PROC",
+            "title": "Package v3.2 · body wrapped",
+            "cited": 12
+          },
+          {
+            "ref": "FK graph",
+            "title": "Foreign-key dependency graph",
+            "cited": 88
+          },
+          {
+            "ref": "STTM_CUST",
+            "title": "Table · customer master",
+            "cited": 27
+          }
+        ],
+        "lenses": [
+          "ops",
+          "eng"
+        ],
+        "note": "Materialised views outside FCUBS also read these tables and are not in the indexed schema — impact answers state that limit rather than implying completeness."
+      },
+      {
+        "id": "src-run-logs",
+        "title": "Batch & EOD Run Logs",
+        "type": "log set",
+        "version": "rolling",
+        "dated": "01 Aug 2024 – 28 Jul 2026",
+        "size": "412 GB",
+        "owner": "Ops platform",
+        "system": "FCUBS 14.7 · scheduler",
+        "ingested": "28 Jul 2026 · 04:02 IST",
+        "ingestedDays": 0,
+        "staleAfter": 2,
+        "citedBy": 2940,
+        "status": "partial",
+        "coverage": {
+          "indexed": 723,
+          "total": 727,
+          "unit": "days",
+          "skipped": [
+            {
+              "what": "11–14 Sep 2025 (4 days)",
+              "why": "Log rotation was misconfigured on the DR node and the originals were overwritten before ingestion. These four days cannot be recovered — any question spanning them is answered with the gap stated."
+            }
+          ]
+        },
+        "units": [
+          {
+            "ref": "28-Jul GLHANDOFF",
+            "title": "Run log · 01:08–01:46",
+            "cited": 34
+          },
+          {
+            "ref": "CKPT_0031_0728_04",
+            "title": "Checkpoint record",
+            "cited": 11
+          },
+          {
+            "ref": "90d run history",
+            "title": "Stage duration series",
+            "cited": 140
+          },
+          {
+            "ref": "28-Jul EOD",
+            "title": "Full run · completed 03:12",
+            "cited": 52
+          }
+        ],
+        "lenses": [
+          "ops",
+          "eng",
+          "assure",
+          "exec"
+        ],
+        "note": "Two years of history is what makes a 96% historical match possible. The September 2025 gap is carried into every answer that spans it."
+      },
+      {
+        "id": "src-ckyc-validation-logs",
+        "title": "CKYC Validation Logs",
+        "type": "log set",
+        "version": "90-day rolling",
+        "dated": "29 Apr 2026 – 28 Jul 2026",
+        "size": "6.1 GB",
+        "owner": "CKYC intake",
+        "system": "CKYC adapter",
+        "ingested": "28 Jul 2026 · 09:20 IST",
+        "ingestedDays": 0,
+        "staleAfter": 2,
+        "citedBy": 96,
+        "status": "complete",
+        "coverage": {
+          "indexed": 90,
+          "total": 90,
+          "unit": "days",
+          "skipped": []
+        },
+        "units": [
+          {
+            "ref": "28-Jul",
+            "title": "Validation log · 214 rejects",
+            "cited": 22
+          },
+          {
+            "ref": "09-Jul",
+            "title": "Validation log · prior occurrence",
+            "cited": 14
+          }
+        ],
+        "lenses": [
+          "ops",
+          "eng",
+          "assure",
+          "exec"
+        ],
+        "note": "Fully ingested and hash-verified against the adapter manifest."
+      },
+      {
+        "id": "src-sponsor-files",
+        "title": "CKYC Sponsor Response Files",
+        "type": "data feed",
+        "version": "daily",
+        "dated": "27 Jun 2026 – 28 Jul 2026",
+        "size": "840 MB",
+        "owner": "Sponsor consortium",
+        "system": "CKYC intake",
+        "ingested": "28 Jul 2026 · 09:15 IST",
+        "ingestedDays": 0,
+        "staleAfter": 2,
+        "citedBy": 57,
+        "status": "partial",
+        "coverage": {
+          "indexed": 31,
+          "total": 32,
+          "unit": "daily files",
+          "skipped": [
+            {
+              "what": "Files dated 27-Jul onward parse under the previous field map",
+              "why": "The sponsor changed the response-file layout on 27-Jul without a version bump. The files are ingested but their fields are mapped to the rev 2 order, so field-level citations after 27-Jul are unreliable until the adapter is re-mapped."
+            }
+          ]
+        },
+        "units": [
+          {
+            "ref": "28-Jul",
+            "title": "Sponsor response file",
+            "cited": 19
+          },
+          {
+            "ref": "09-Jul",
+            "title": "Sponsor response file",
+            "cited": 12
+          }
+        ],
+        "lenses": [
+          "ops",
+          "eng",
+          "assure",
+          "exec"
+        ],
+        "note": "This is the source of the INC-2261 mismatch, and the reason the diagnosis is stated as grounded rather than certain."
+      },
+      {
+        "id": "src-nach-returns",
+        "title": "NACH Return Files",
+        "type": "data feed",
+        "version": "daily",
+        "dated": "01 Jan 2026 – 28 Jul 2026",
+        "size": "2.2 GB",
+        "owner": "Payments ops",
+        "system": "NACH gateway",
+        "ingested": "28 Jul 2026 · 07:05 IST",
+        "ingestedDays": 0,
+        "staleAfter": 2,
+        "citedBy": 44,
+        "status": "partial",
+        "coverage": {
+          "indexed": 206,
+          "total": 209,
+          "unit": "daily files",
+          "skipped": [
+            {
+              "what": "3 sponsor banks report no status",
+              "why": "Three sponsors do not publish a return status at all. They account for 38% of the observed variance on INC-2287, which is why that diagnosis is refused rather than estimated."
+            }
+          ]
+        },
+        "units": [
+          {
+            "ref": "28-Jul",
+            "title": "NACH return file",
+            "cited": 16
+          },
+          {
+            "ref": "30d baseline",
+            "title": "Derived 30-day mean",
+            "cited": 21
+          }
+        ],
+        "lenses": [
+          "ops",
+          "eng",
+          "assure",
+          "exec"
+        ],
+        "note": "The 30-day baseline is computed from this feed; it is a derived series, not a separately ingested source."
+      },
+      {
+        "id": "src-itsm-adapter",
+        "title": "ITSM Adapter Event Stream",
+        "type": "log set",
+        "version": "rolling",
+        "dated": "14 Mar 2026 – 28 Jul 2026",
+        "size": "11.4 GB",
+        "owner": "Ops platform",
+        "system": "ITSM bridge",
+        "ingested": "28 Jul 2026 · 04:02 IST",
+        "ingestedDays": 0,
+        "staleAfter": 2,
+        "citedBy": 88,
+        "status": "partial",
+        "coverage": {
+          "indexed": 136,
+          "total": 137,
+          "unit": "days",
+          "skipped": [
+            {
+              "what": "14-Jul, 09:41–13:55 (4h 14m)",
+              "why": "The adapter emitted no heartbeat for this window. A source with no heartbeat cannot prove it was quiet rather than broken, so coverage is not claimed for it — this is the gap the July evidence pack declares."
+            }
+          ]
+        },
+        "units": [
+          {
+            "ref": "14-Jul",
+            "title": "Silent window · 4h 14m",
+            "cited": 12
+          },
+          {
+            "ref": "Jul-2026",
+            "title": "Event stream · 1,204 rows",
+            "cited": 41
+          }
+        ],
+        "lenses": [
+          "ops",
+          "eng",
+          "assure",
+          "exec"
+        ],
+        "note": "Ties directly to the open coverage gap on the July evidence scope."
+      },
+      {
+        "id": "src-holiday-calendar",
+        "title": "RBI & Bank Holiday Calendar 2026",
+        "type": "reference",
+        "version": "2026",
+        "dated": "12 Jan 2026",
+        "size": "48 KB",
+        "owner": "Compliance",
+        "system": "reference data",
+        "ingested": "12 Jan 2026 · 10:00 IST",
+        "ingestedDays": 228,
+        "staleAfter": 365,
+        "citedBy": 31,
+        "status": "complete",
+        "coverage": {
+          "indexed": 1,
+          "total": 1,
+          "unit": "calendar year",
+          "skipped": []
+        },
+        "units": [
+          {
+            "ref": "2026",
+            "title": "Holiday calendar · 21 dates",
+            "cited": 31
+          }
+        ],
+        "lenses": [
+          "ops",
+          "eng",
+          "assure",
+          "exec"
+        ],
+        "note": "Fully ingested and hash-verified."
+      },
+      {
+        "id": "src-sanctions-ref",
+        "title": "Sanctions & Watchlist Screening Reference",
+        "type": "reference",
+        "version": "2026-08",
+        "dated": "21 Aug 2026",
+        "size": "340 MB",
+        "owner": "Financial crime compliance",
+        "system": "screening engine",
+        "ingested": "21 Aug 2026 · 03:00 IST",
+        "ingestedDays": 8,
+        "staleAfter": 30,
+        "citedBy": 0,
+        "status": "complete",
+        "coverage": {
+          "indexed": 1,
+          "total": 1,
+          "unit": "list version",
+          "skipped": []
+        },
+        "units": [
+          {
+            "ref": "2026-08",
+            "title": "Consolidated list",
+            "cited": 0
+          }
+        ],
+        "lenses": [
+          "eng",
+          "assure"
+        ],
+        "note": "Screening reference data. Restricted to Engineering and Assurance by the source owner — the row stays listed for every lens, and the reason is stated rather than the source being hidden (§6.4 rule 3)."
+      }
+    ],
+    "total": 10,
+    "cursor": null
+  }
+}

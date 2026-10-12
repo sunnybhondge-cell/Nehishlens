@@ -1,0 +1,55 @@
+{
+  "ts": "2026-09-08T14:24:17.861Z",
+  "method": "GET",
+  "path": "/audit?limit=50",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/audit?limit=50",
+  "lens": "ops",
+  "status": 200,
+  "ok": true,
+  "durationMs": 60,
+  "responseBody": {
+    "items": [
+      {
+        "seq": 1,
+        "at": "2026-09-05T23:00:42+05:30",
+        "actor": "system",
+        "actorKind": "ai",
+        "verb": "store.reset",
+        "object": "store",
+        "payload": {},
+        "prevHash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "hash": "5508d2b710e64bc470079e1b211d9c58e21011e59d0559e422345dc19d659a75"
+      },
+      {
+        "seq": 2,
+        "at": "2026-09-08T17:14:32+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "audit",
+        "payload": {
+          "question": "What would the gap have captured?",
+          "reason": "no_grounding"
+        },
+        "prevHash": "5508d2b710e64bc470079e1b211d9c58e21011e59d0559e422345dc19d659a75",
+        "hash": "5dced5df37082e542bd9408fc20431748b1dc5d928c31cd50c29fc8e8bdd3eae"
+      },
+      {
+        "seq": 3,
+        "at": "2026-09-08T17:14:34+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "audit",
+        "payload": {
+          "question": "Show corroborating sources",
+          "reason": "no_grounding"
+        },
+        "prevHash": "5dced5df37082e542bd9408fc20431748b1dc5d928c31cd50c29fc8e8bdd3eae",
+        "hash": "e2cb758a78186e44afa7df49244f6a57f9c0fd764dc93b6bd20e3d9e10aa225c"
+      }
+    ],
+    "total": 3,
+    "cursor": null
+  }
+}

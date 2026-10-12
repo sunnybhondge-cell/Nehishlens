@@ -1,0 +1,24 @@
+{
+  "ts": "2026-09-02T16:13:07.574Z",
+  "method": "GET",
+  "path": "/audit/c6760365a8bfbf52f7bfde302c5bb4a2a19b0e8293d59d28a547aab73694a0c6",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/audit/c6760365a8bfbf52f7bfde302c5bb4a2a19b0e8293d59d28a547aab73694a0c6",
+  "lens": "eng",
+  "status": 200,
+  "ok": true,
+  "durationMs": 96,
+  "responseBody": {
+    "seq": 2,
+    "at": "2026-08-31T19:12:56+05:30",
+    "actor": "cortex",
+    "actorKind": "ai",
+    "verb": "cortex.refusal",
+    "object": "today",
+    "payload": {
+      "question": "Draft the shift handover",
+      "reason": "no_grounding"
+    },
+    "prevHash": "5508d2b710e64bc470079e1b211d9c58e21011e59d0559e422345dc19d659a75",
+    "hash": "c6760365a8bfbf52f7bfde302c5bb4a2a19b0e8293d59d28a547aab73694a0c6"
+  }
+}

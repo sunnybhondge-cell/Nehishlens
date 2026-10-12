@@ -3,7 +3,7 @@ import { SettingsApi, MockControlApi, type ThresholdEntry } from '../api/endpoin
 import { useHydrated } from '../hooks/useHydrated';
 import { ScreenHeader } from '../components/ScreenHeader';
 import { ApiErrorBanner } from '../components/ApiErrorBanner';
-import { Trace, PanelHead, TableRowsState } from '../components/ui';
+import { Trace, PanelHead, TableRowsState, CheckIcon } from '../components/ui';
 import type { ApiError } from '../api/client';
 
 const LABEL: Record<string, string> = {
@@ -101,7 +101,7 @@ function MockControls() {
         <span className="mono">GET /_states</span>). Not shown in a production build.
       </p>
       <button className="btn btn-s btn-warn" disabled={reset.isPending} onClick={() => reset.mutate()}>
-        {reset.isSuccess ? 'Store reset ✓' : reset.isPending ? 'Resetting…' : 'Reset mock store'}
+        {reset.isSuccess ? <>Store reset <CheckIcon /></> : reset.isPending ? 'Resetting…' : 'Reset mock store'}
       </button>
       {reset.error && <ApiErrorBanner error={reset.error} what="the mock reset" />}
       {states.data && (

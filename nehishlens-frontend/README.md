@@ -40,6 +40,8 @@ the choice persists.
 | Light/dark theme | `src/context/ThemeContext.tsx`, `src/styles/theme-dark.css` |
 | Ported design system (verbatim from the prototype) | `src/styles/legacy.css` |
 | Shell (icon rail, top bar, screen header) | `src/components/Rail.tsx`, `Topbar.tsx`, `ScreenHeader.tsx` |
+| Citation chips resolved against `GET /citations` (loaded once at boot) | `src/hooks/useCitations.ts`, `Cite` in `src/components/ui.tsx` |
+| Corpus tabs, problem fingerprint sheet | `src/components/CorpusTabs.tsx`, `src/components/SignatureSheet.tsx` |
 | Routing (hash-based) | `src/App.tsx` |
 
 Per-screen route and endpoint map: **[docs/SCREENS.md](docs/SCREENS.md)**.

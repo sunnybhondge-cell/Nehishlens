@@ -1,0 +1,37 @@
+{
+  "ts": "2026-09-02T15:59:31.150Z",
+  "method": "POST",
+  "path": "/cortex/ask",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/cortex/ask",
+  "lens": "ops",
+  "status": 200,
+  "ok": true,
+  "durationMs": 60,
+  "requestBody": {
+    "question": "Show res#1198",
+    "context": {
+      "screen": "incidents",
+      "lens": "ops",
+      "objectId": null
+    }
+  },
+  "responseBody": {
+    "answerId": "ANS-00029",
+    "question": "Show res#1198",
+    "askedAt": "2026-09-02T21:29:30+05:30",
+    "confidence": "refused",
+    "confidencePct": null,
+    "answer": "I do not hold grounded material for that. Rather than compose something plausible, I am declining — what I would produce could not be traced to a source, and an answer you cannot check is worse than none.",
+    "citations": [],
+    "notVerified": [],
+    "threshold": {
+      "refuseBelowConfidence": 70,
+      "applied": true
+    },
+    "context": {
+      "screen": "incidents",
+      "lens": "ops",
+      "objectId": null
+    }
+  }
+}

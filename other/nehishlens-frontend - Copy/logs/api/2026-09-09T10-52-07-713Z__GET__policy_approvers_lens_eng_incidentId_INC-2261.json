@@ -1,0 +1,27 @@
+{
+  "ts": "2026-09-09T10:52:07.713Z",
+  "method": "GET",
+  "path": "/policy/approvers?lens=eng&incidentId=INC-2261",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/policy/approvers?lens=eng&incidentId=INC-2261",
+  "lens": "eng",
+  "status": 200,
+  "ok": true,
+  "durationMs": 62,
+  "responseBody": {
+    "required": 1,
+    "candidates": [
+      {
+        "id": "r.edwards",
+        "name": "R. Edwards",
+        "role": "Checker"
+      },
+      {
+        "id": "s.menon",
+        "name": "S. Menon",
+        "role": "Checker"
+      }
+    ],
+    "proposerMayNotApprove": true,
+    "suggested": null
+  }
+}

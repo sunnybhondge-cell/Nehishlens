@@ -1,0 +1,24 @@
+{
+  "ts": "2026-09-02T16:13:13.876Z",
+  "method": "GET",
+  "path": "/audit/9ea647c924bc98d1ae3ae9fea70b6d2c3c07e3f74d0727183b9a66f7dcd0b32c",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/audit/9ea647c924bc98d1ae3ae9fea70b6d2c3c07e3f74d0727183b9a66f7dcd0b32c",
+  "lens": "eng",
+  "status": 200,
+  "ok": true,
+  "durationMs": 92,
+  "responseBody": {
+    "seq": 3,
+    "at": "2026-08-31T19:13:12+05:30",
+    "actor": "cortex",
+    "actorKind": "ai",
+    "verb": "cortex.refusal",
+    "object": "incidents",
+    "payload": {
+      "question": "Show res#1198",
+      "reason": "no_grounding"
+    },
+    "prevHash": "c6760365a8bfbf52f7bfde302c5bb4a2a19b0e8293d59d28a547aab73694a0c6",
+    "hash": "9ea647c924bc98d1ae3ae9fea70b6d2c3c07e3f74d0727183b9a66f7dcd0b32c"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "ts": "2026-09-09T10:43:04.019Z",
+  "method": "GET",
+  "path": "/incidents/INC-2287/recall",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/incidents/INC-2287/recall",
+  "lens": "eng",
+  "status": 200,
+  "ok": true,
+  "durationMs": 102,
+  "responseBody": {
+    "match": null,
+    "reason": "No resolution matches this signature. This is the first occurrence, so there is nothing to recall."
+  }
+}

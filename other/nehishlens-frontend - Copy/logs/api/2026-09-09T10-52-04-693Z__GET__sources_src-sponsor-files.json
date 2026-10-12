@@ -1,0 +1,55 @@
+{
+  "ts": "2026-09-09T10:52:04.693Z",
+  "method": "GET",
+  "path": "/sources/src-sponsor-files",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/sources/src-sponsor-files",
+  "lens": "eng",
+  "status": 200,
+  "ok": true,
+  "durationMs": 147,
+  "responseBody": {
+    "id": "src-sponsor-files",
+    "title": "CKYC Sponsor Response Files",
+    "type": "data feed",
+    "version": "daily",
+    "dated": "27 Jun 2026 – 28 Jul 2026",
+    "size": "840 MB",
+    "owner": "Sponsor consortium",
+    "system": "CKYC intake",
+    "ingested": "28 Jul 2026 · 09:15 IST",
+    "ingestedDays": 0,
+    "staleAfter": 2,
+    "citedBy": 57,
+    "status": "partial",
+    "coverage": {
+      "indexed": 31,
+      "total": 32,
+      "unit": "daily files",
+      "skipped": [
+        {
+          "what": "Files dated 27-Jul onward parse under the previous field map",
+          "why": "The sponsor changed the response-file layout on 27-Jul without a version bump. The files are ingested but their fields are mapped to the rev 2 order, so field-level citations after 27-Jul are unreliable until the adapter is re-mapped."
+        }
+      ]
+    },
+    "units": [
+      {
+        "ref": "28-Jul",
+        "title": "Sponsor response file",
+        "cited": 19
+      },
+      {
+        "ref": "09-Jul",
+        "title": "Sponsor response file",
+        "cited": 12
+      }
+    ],
+    "lenses": [
+      "ops",
+      "eng",
+      "assure",
+      "exec"
+    ],
+    "note": "This is the source of the INC-2261 mismatch, and the reason the diagnosis is stated as grounded rather than certain."
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "ts": "2026-09-02T16:01:06.780Z",
+  "method": "GET",
+  "path": "/sources/src-nach-returns",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/sources/src-nach-returns",
+  "lens": "eng",
+  "status": 200,
+  "ok": true,
+  "durationMs": 215,
+  "responseBody": {
+    "id": "src-nach-returns",
+    "title": "NACH Return Files",
+    "type": "data feed",
+    "version": "daily",
+    "dated": "01 Jan 2026 – 28 Jul 2026",
+    "size": "2.2 GB",
+    "owner": "Payments ops",
+    "system": "NACH gateway",
+    "ingested": "28 Jul 2026 · 07:05 IST",
+    "ingestedDays": 0,
+    "staleAfter": 2,
+    "citedBy": 44,
+    "status": "partial",
+    "coverage": {
+      "indexed": 206,
+      "total": 209,
+      "unit": "daily files",
+      "skipped": [
+        {
+          "what": "3 sponsor banks report no status",
+          "why": "Three sponsors do not publish a return status at all. They account for 38% of the observed variance on INC-2287, which is why that diagnosis is refused rather than estimated."
+        }
+      ]
+    },
+    "units": [
+      {
+        "ref": "28-Jul",
+        "title": "NACH return file",
+        "cited": 16
+      },
+      {
+        "ref": "30d baseline",
+        "title": "Derived 30-day mean",
+        "cited": 21
+      }
+    ],
+    "lenses": [
+      "ops",
+      "eng",
+      "assure",
+      "exec"
+    ],
+    "note": "The 30-day baseline is computed from this feed; it is a derived series, not a separately ingested source."
+  }
+}

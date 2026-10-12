@@ -1,0 +1,125 @@
+{
+  "ts": "2026-09-08T14:47:43.270Z",
+  "method": "GET",
+  "path": "/audit?limit=50",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/audit?limit=50",
+  "lens": "eng",
+  "status": 200,
+  "ok": true,
+  "durationMs": 90,
+  "responseBody": {
+    "items": [
+      {
+        "seq": 1,
+        "at": "2026-09-05T23:00:42+05:30",
+        "actor": "system",
+        "actorKind": "ai",
+        "verb": "store.reset",
+        "object": "store",
+        "payload": {},
+        "prevHash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "hash": "5508d2b710e64bc470079e1b211d9c58e21011e59d0559e422345dc19d659a75"
+      },
+      {
+        "seq": 2,
+        "at": "2026-09-08T17:14:32+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "audit",
+        "payload": {
+          "question": "What would the gap have captured?",
+          "reason": "no_grounding"
+        },
+        "prevHash": "5508d2b710e64bc470079e1b211d9c58e21011e59d0559e422345dc19d659a75",
+        "hash": "5dced5df37082e542bd9408fc20431748b1dc5d928c31cd50c29fc8e8bdd3eae"
+      },
+      {
+        "seq": 3,
+        "at": "2026-09-08T17:14:34+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "audit",
+        "payload": {
+          "question": "Show corroborating sources",
+          "reason": "no_grounding"
+        },
+        "prevHash": "5dced5df37082e542bd9408fc20431748b1dc5d928c31cd50c29fc8e8bdd3eae",
+        "hash": "e2cb758a78186e44afa7df49244f6a57f9c0fd764dc93b6bd20e3d9e10aa225c"
+      },
+      {
+        "seq": 4,
+        "at": "2026-09-08T20:01:54+05:30",
+        "actor": "vishal.d",
+        "actorKind": "human",
+        "verb": "action.propose",
+        "object": "act-0001",
+        "payload": {
+          "incidentId": "INC-2261",
+          "requiredApproverId": "r.edwards"
+        },
+        "prevHash": "e2cb758a78186e44afa7df49244f6a57f9c0fd764dc93b6bd20e3d9e10aa225c",
+        "hash": "90c239129a2b5b23d0658e55ab6ce06867806a3acd3865fd040b286a5f5f87ce"
+      },
+      {
+        "seq": 5,
+        "at": "2026-09-08T20:03:44+05:30",
+        "actor": "vishal.d",
+        "actorKind": "human",
+        "verb": "loop.advance",
+        "object": "INC-2261",
+        "payload": {
+          "from": "acting",
+          "to": "acted"
+        },
+        "prevHash": "90c239129a2b5b23d0658e55ab6ce06867806a3acd3865fd040b286a5f5f87ce",
+        "hash": "c39912dc5277d8f8f2f863dae8e0cb1eae18957646422266cc23efbdcc98499a"
+      },
+      {
+        "seq": 6,
+        "at": "2026-09-08T20:15:42+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.refusal",
+        "object": "today",
+        "payload": {
+          "question": "Draft the shift handover",
+          "reason": "no_grounding"
+        },
+        "prevHash": "c39912dc5277d8f8f2f863dae8e0cb1eae18957646422266cc23efbdcc98499a",
+        "hash": "683e235f1d4dce2efebb3f41e36a2b6399015a4af7e0932fb76501af5eea88e6"
+      },
+      {
+        "seq": 7,
+        "at": "2026-09-08T20:15:44+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.answer",
+        "object": "today",
+        "payload": {
+          "question": "Why was EOD 38m late?",
+          "confidencePct": 94
+        },
+        "prevHash": "683e235f1d4dce2efebb3f41e36a2b6399015a4af7e0932fb76501af5eea88e6",
+        "hash": "be0828d4dd855fce5e14e43fb160882a820b7d05a41b3f1bd43bd844c7672b23"
+      },
+      {
+        "seq": 8,
+        "at": "2026-09-08T20:15:49+05:30",
+        "actor": "cortex",
+        "actorKind": "ai",
+        "verb": "cortex.answer",
+        "object": "today",
+        "payload": {
+          "question": "Why was EOD 38m late?",
+          "confidencePct": 94
+        },
+        "prevHash": "be0828d4dd855fce5e14e43fb160882a820b7d05a41b3f1bd43bd844c7672b23",
+        "hash": "601c7cbf7f2f15c2b4018d96333383456f3a2eff2eeca962289d032f8efbc097"
+      }
+    ],
+    "total": 8,
+    "cursor": null
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "ts": "2026-09-09T10:52:38.951Z",
+  "method": "GET",
+  "path": "/sources/src-fcubs-schema",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/sources/src-fcubs-schema",
+  "lens": "eng",
+  "status": 200,
+  "ok": true,
+  "durationMs": 144,
+  "responseBody": {
+    "id": "src-fcubs-schema",
+    "title": "FCUBS Database Structure — read-only replica",
+    "type": "schema",
+    "version": "snapshot",
+    "dated": "26 Aug 2026",
+    "size": "96 MB · 4,318 objects",
+    "owner": "Core banking DBA",
+    "system": "FCUBS 14.7",
+    "ingested": "26 Aug 2026 · 01:05 IST",
+    "ingestedDays": 3,
+    "staleAfter": 7,
+    "citedBy": 203,
+    "status": "partial",
+    "coverage": {
+      "indexed": 4102,
+      "total": 4318,
+      "unit": "objects",
+      "skipped": [
+        {
+          "what": "216 PL/SQL bodies",
+          "why": "Wrapped (encrypted) package bodies. The signatures are indexed; the logic inside them is not readable, so dependency answers derived from them are incomplete and say so."
+        }
+      ]
+    },
+    "units": [
+      {
+        "ref": "CH_ACCT_SUSPENSE",
+        "title": "Table · 7 direct dependents",
+        "cited": 41
+      },
+      {
+        "ref": "GL_SUSPENSE_PROC",
+        "title": "Package v3.2 · body wrapped",
+        "cited": 12
+      },
+      {
+        "ref": "FK graph",
+        "title": "Foreign-key dependency graph",
+        "cited": 88
+      },
+      {
+        "ref": "STTM_CUST",
+        "title": "Table · customer master",
+        "cited": 27
+      }
+    ],
+    "lenses": [
+      "ops",
+      "eng"
+    ],
+    "note": "Materialised views outside FCUBS also read these tables and are not in the indexed schema — impact answers state that limit rather than implying completeness."
+  }
+}

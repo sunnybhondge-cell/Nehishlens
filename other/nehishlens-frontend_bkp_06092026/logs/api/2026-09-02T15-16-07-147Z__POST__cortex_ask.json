@@ -1,0 +1,37 @@
+{
+  "ts": "2026-09-02T15:16:07.147Z",
+  "method": "POST",
+  "path": "/cortex/ask",
+  "url": "https://mock-api-nehishlens.aminobots.com/api/v1/cortex/ask",
+  "lens": "ops",
+  "status": 200,
+  "ok": true,
+  "durationMs": 56,
+  "requestBody": {
+    "question": "Compare to last 7 nights",
+    "context": {
+      "screen": "eod",
+      "lens": "ops",
+      "objectId": "INC-2261"
+    }
+  },
+  "responseBody": {
+    "answerId": "ANS-00025",
+    "question": "Compare to last 7 nights",
+    "askedAt": "2026-09-02T20:46:06+05:30",
+    "confidence": "refused",
+    "confidencePct": null,
+    "answer": "I do not hold grounded material for that. Rather than compose something plausible, I am declining — what I would produce could not be traced to a source, and an answer you cannot check is worse than none.",
+    "citations": [],
+    "notVerified": [],
+    "threshold": {
+      "refuseBelowConfidence": 70,
+      "applied": true
+    },
+    "context": {
+      "screen": "eod",
+      "lens": "ops",
+      "objectId": "INC-2261"
+    }
+  }
+}
