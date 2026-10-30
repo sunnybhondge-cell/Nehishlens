@@ -30,7 +30,7 @@ export function LensProvider({ children }: { children: ReactNode }) {
 
   const setActiveLens = useCallback((next: Lens) => {
     setLensState(next);
-    setLens(next); // updates the X-Lens header used by every subsequent request
+    setLens(next); // mirrors the token lens for the UI; never sent to the server
     if (next !== lensRef.current) {
       lensRef.current = next;
       // Responses are lens-scoped (/priorities differs per lens, /sources/{id} can 403) and

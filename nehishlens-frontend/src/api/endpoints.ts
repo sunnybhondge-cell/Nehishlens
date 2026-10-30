@@ -318,8 +318,24 @@ export interface AuditVerifyResponse {
   brokenAtSeq?: number;
 }
 
+/** GET /audit filters. They narrow what is shown, never what is recorded. */
+export interface AuditFilters {
+  q?: string;
+  actor?: string;
+  kind?: 'ai' | 'human';
+  /** ISO timestamps, inclusive. */
+  from?: string;
+  to?: string;
+}
+
 export const AuditApi = {
-  list: (limit = 50) => api.list<AuditEntry>(`/audit?limit=${limit}`),
+  /** `cursor` is opaque — pass back exactly what the previous page returned. */
+  search: (filters: AuditFilters, cursor?: string | null, limit = 50) => {
+    const params = new URLSearchParams({ limit: String(limit) });
+    for (const [k, v] of Object.entries(filters)) if (v) params.set(k, v);
+    if (cursor) params.set('cursor', cursor);
+    return api.page<AuditEntry>(`/audit?${params}`);
+  },
   verify: () => api.get<AuditVerifyResponse>('/audit/verify'),
   byHash: (entryHash: string) => api.get<AuditEntry>(`/audit/${encodeURIComponent(entryHash)}`),
 };
@@ -498,4 +514,131 @@ export const CortexApi = {
 export const MockControlApi = {
   reset: () => api.post<void>('/_reset'),
   states: () => api.get<{ states: string[]; howToUse: string; note: string }>('/_states'),
+};
+
+// ---------------------------------------------------------------------------
+// Authentication — Nehish-issued tokens, no bank IdP in Phase 1
+// ---------------------------------------------------------------------------
+export interface SessionUser {
+  id: string;
+  name: string;
+  title?: string;
+  /** Derived server-side from the token — the frontend never chooses it. */
+  lens: Lens;
+  permissions: string[];
+  tenant: string;
+}
+export interface LoginResponse {
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+  user: SessionUser;
+}
+
+export const AuthApi = {
+  login: (username: string, password: string) =>
+    api.post<LoginResponse>('/auth/login', { username, password }, { noAuthRetry: true }),
+  // Idempotent on the server; takes the refresh token so both tokens are dropped.
+  logout: (refreshToken: string) => api.post<void>('/auth/logout', { refreshToken }, { noAuthRetry: true }),
+  me: () => api.get<SessionUser>('/auth/me'),
+};
+
+// ---------------------------------------------------------------------------
+// Evidence packs · #/audit/packs/new — Assurance only (pack:create)
+// ---------------------------------------------------------------------------
+export interface PackScope {
+  range: '7' | '30' | '90';
+  types: 'all' | 'ai' | 'human';
+  systems: string;
+}
+/** Coverage the pack cannot claim. Content to declare, not a warning to dismiss. */
+export interface PackGap {
+  id: string;
+  source: string;
+  reason: string;
+}
+export interface PackPreview {
+  rows: number;
+  artifacts: number;
+  sources: number;
+  estSeconds: number;
+  gaps: PackGap[];
+}
+export interface EvidencePack extends Partial<PackScope> {
+  id: string;
+  status: 'building' | 'ready' | string;
+  createdAt?: string;
+  rows?: number;
+  artifacts?: number;
+  sources?: number;
+  gaps?: PackGap[];
+  requestedBy?: string;
+  manifestHash?: string | null;
+  signedBy?: string | null;
+  signedAt?: string | null;
+  downloadUrl?: string | null;
+}
+
+export const PacksApi = {
+  preview: (scope: PackScope) => api.post<PackPreview>('/packs/preview', scope),
+  /** 422 gaps_not_declared unless every gap in scope is in acknowledgedGaps. */
+  create: (scope: PackScope, requestedBy: string, acknowledgedGaps: string[]) =>
+    api.post<EvidencePack>('/packs', { ...scope, requestedBy, acknowledgedGaps }),
+  get: (packId: string) => api.get<EvidencePack>(`/packs/${encodeURIComponent(packId)}`),
+  list: () => api.list<EvidencePack>('/packs'),
+};
+
+// ---------------------------------------------------------------------------
+// DB Console · Screen 6 — Engineering only (db:read, db:investigate)
+// ---------------------------------------------------------------------------
+export interface DbObjectSummary {
+  name: string;
+  rows: number;
+  module: string;
+  note?: string;
+}
+export interface DbColumn {
+  name: string;
+  type: string;
+  nullable: boolean;
+  pk?: boolean;
+  masked?: boolean;
+}
+export interface DbObject extends DbObjectSummary {
+  kind: string;
+  columns: DbColumn[];
+  foreignKeys: Array<{ column: string; references: string }>;
+  dependents: Array<{ object: string; via: string }>;
+  eodBatches?: string[];
+  /** What the dependency walk could not establish — said out loud, not swallowed. */
+  notConfirmed?: string[];
+}
+export interface DbQueryResult {
+  columns: string[];
+  rows: unknown[][];
+  /** Columns policy masked. Show them — an invisible redaction reads as missing data. */
+  maskedColumns: string[];
+  durationMs: number;
+  /** Hash of this query's own audit row (db.query) — resolvable via GET /audit/{hash}. */
+  auditRef: string;
+  outputHash: string;
+  note?: string;
+}
+export interface DbInvestigation {
+  id: string;
+  hash: string;
+  attachedTo: string;
+  signedBy: string;
+  signedAt: string;
+  queries: unknown[];
+}
+
+export const DbApi = {
+  schema: (q?: string) => api.list<DbObjectSummary>(`/db/schema${q ? `?q=${encodeURIComponent(q)}` : ''}`),
+  /** 404 not_indexed is "not in the index", not "does not exist". */
+  object: (name: string) => api.get<DbObject>(`/db/objects/${encodeURIComponent(name)}`),
+  /** Read-only is enforced by the server: anything but a SELECT is 422 not_read_only. */
+  query: (sql: string) => api.post<DbQueryResult>('/db/query', { sql }),
+  investigate: (queryAuditRefs: string[], changeRecord: string, signedBy: string) =>
+    api.post<DbInvestigation>('/db/investigations', { queryAuditRefs, changeRecord, signedBy }),
 };

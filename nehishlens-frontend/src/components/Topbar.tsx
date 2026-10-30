@@ -17,7 +17,7 @@ const LENSES: { id: Lens; label: string }[] = [
 
 export function Topbar({ online }: { online: boolean | null }) {
   const [attentionOpen, setAttentionOpen] = useState(false);
-  const { lens, setActiveLens } = useLens();
+  const { lens } = useLens();
   const { theme, toggle } = useTheme();
   const { user, signOut } = useAuth();
 
@@ -35,20 +35,13 @@ export function Topbar({ online }: { online: boolean | null }) {
 
   return (
     <header className="topbar">
+      {/* Read-only: the lens is derived server-side from the token. To see another lens, sign in as that user. */}
       <div className="lens-review" aria-label="Lens context">
         <span className="lens-title">LENS</span>
-        {LENSES.map((l) => (
-          <button
-            key={l.id}
-            type="button"
-            className={`lens-tab ${l.id} ${lens === l.id ? 'active' : ''}`}
-            aria-pressed={lens === l.id}
-            onClick={() => setActiveLens(l.id)}
-          >
-            {l.label}
-          </button>
-        ))}
-        <span className="lens-source">role context · via SSO</span>
+        <span className={`lens-tab ${lens} active`} style={{ cursor: 'default' }}>
+          {LENSES.find((l) => l.id === lens)?.label ?? lens}
+        </span>
+        <span className="lens-source">from your sign-in</span>
       </div>
 
       <span className="chip">
@@ -87,7 +80,9 @@ export function Topbar({ online }: { online: boolean | null }) {
         </summary>
         <div className="user-menu-pop panel">
           <div className="t-cap mono" style={{ marginBottom: 8 }}>
-            {user?.name} · {user?.lens}
+            {user?.name} · {user?.id}
+            <br />
+            {user?.title ?? user?.lens} · {user?.tenant}
           </div>
           <button type="button" className="btn btn-s" onClick={signOut}>
             Sign out

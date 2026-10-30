@@ -11,8 +11,10 @@ Conventions used below:
 - **enabled: …** = a `useQuery` that stays idle until its condition is true.
 - **invalidates `[key]`** = `queryClient.invalidateQueries` after a mutation, which
   makes every mounted query with that key refetch.
-- Every request carries `X-Lens: <current lens>` (set from the top-bar lens
-  switcher via `setLens`). Requests carry `X-Mock-State: <value>` when
+- Every request after sign-in carries `Authorization: Bearer <accessToken>`.
+  **No request sends `X-Lens`** — the server derives the lens from the token.
+  On a 401 the client refreshes once (shared across concurrent requests — the
+  refresh token is single-use) and retries. Requests carry `X-Mock-State: <value>` when
   `VITE_FORCE_MOCK_STATE` is set, or per-call where noted.
 - "navigation only" = a `<Link>` / `navigate()` — no request of its own; the
   destination screen's own on-load calls then run.
@@ -34,8 +36,10 @@ once when you sign in and stay cached across screen changes.
 
 | Interaction | Calls | Effect |
 |---|---|---|
-| Lens tab (Operations / Engineering / Assurance / Executive) | — | `setActiveLens` → `setLens` changes the `X-Lens` header for **all later** requests. Queries whose key contains `lens` (`approvers`, `cortex-context`) refetch. |
-| Theme toggle, "Cortex" button, "Attention" toggle, account menu, "Sign out" | — | Local state / navigation / `localStorage` only. Sign-in and sign-out make **no** network call — the API has no auth. |
+| Lens label | — | Read-only — shows the lens the server returned at sign-in. To see another lens, sign in as another user. |
+| Theme toggle, "Cortex" button, "Attention" toggle, account menu | — | Local state / navigation only. |
+| "Sign out" | `AuthApi.logout(refreshToken)` → `POST /auth/logout` | Fire-and-forget; tokens dropped from memory and the query cache cleared regardless of the response. |
+| (background) | `POST /auth/refresh` | At ~80% of `expiresIn`, and on any 401. If it fails, the session ends and the sign-in screen shows the server's message. |
 
 ---
 
@@ -44,7 +48,8 @@ once when you sign in and stay cached across screen changes.
 | Trigger | API call |
 |---|---|
 | On load | **none** |
-| "Sign in" (submit) | **none** — `signIn(name, lens)` sets `X-Lens` and writes `localStorage`, then routes to the lens landing screen |
+| "Sign in" (submit) | `AuthApi.login(username, password)` → `POST /auth/login`. Stores the token pair in memory, takes the lens from `user.lens`, routes to that lens's landing screen. A 401 renders the server's message. |
+| Seeded-user buttons (**dev builds only**) | none — fill the username field |
 | Theme toggle | none |
 
 ---
@@ -91,7 +96,7 @@ No interactive calls — the screen is read-only.
 | Interaction | API call | Method + path | After |
 |---|---|---|---|
 | Stage filter buttons (All / Observed / Understood / Acting / Acted / Remembered) | — | — | client-side filter of the already-loaded list |
-| "+ Observe incident" | — | — | opens the inline form |
+| "+ Observe incident" (**dev builds only**, `VITE_DEV_TOOLS`) | — | — | opens the inline form |
 | "Observe" (in the form) | `IncidentsApi.create({ title, message, severity })` | `POST /incidents` | invalidates `['incidents']`, calls `incidents.refetch()`, then `navigate('/incidents/{newId}')` |
 | "Cancel" | — | — | closes the form |
 | Incident title / "Review proposed action →" | — | — | navigation to `/incidents/{id}` |
@@ -140,25 +145,40 @@ No interactive calls — the screen is read-only.
 
 | Trigger | API call | Method + path |
 |---|---|---|
-| On load | `AuditApi.list(50)` | `GET /audit?limit=50` — key `['audit']` |
+| On load / filter change | `AuditApi.search(filters, cursor)` | `GET /audit?limit=50&q=&actor=&kind=&from=&to=` — infinite query, key `['audit', filters]`; filters come from the URL query string |
+| `#/audit/{hash}` in the URL | `AuditApi.byHash(hash)` | `GET /audit/{hash}` — key `['audit-entry', hash]`; entry panel above the table |
 | On load | `AuditApi.verify()` | `GET /audit/verify` — key `['audit-verify']` |
 
 | Interaction | API call | Method + path |
 |---|---|---|
-| Click an audit table row (expand) | `AuditApi.byHash(entry.hash)` | `GET /audit/{hash}` — key `['audit-entry', hash]`, `enabled: open`. Re-collapsing/expanding uses the cache. |
+| Search form submit (text, actor) | key changes → refetch | `GET /audit?q=&actor=…` |
+| Kind select, From / To dates | key changes → refetch | `GET /audit?kind=&from=&to=…` (dates sent as inclusive ISO timestamps) |
+| "Clear" / "Clear filters" | key changes → refetch | `GET /audit?limit=50` |
+| "Load more" (only when the response returned a `cursor`) | next page | `GET /audit?…&cursor=<cursor>` |
+| Click / Enter on a row, "Previous hash" link | — | navigation to `#/audit/{hash8}` (filters kept) → entry panel load |
+| "Copy link" | — | copies `#/audit/{hash8}` without filters |
 | "Open evidence-pack builder →" | — | navigation to `/audit/packs/new` |
 
 ---
 
 ## `/audit/packs/new` — `PackBuilder.tsx`
 
-Pack generation has no endpoint on the mock (`/audit/packs/*` → 404); the scope
-and export controls are `disabled`.
+Assurance only (`pack:create`). A user without the grant gets `403 not_granted`
+from `GET /packs`; the screen shows that message instead of the builder.
 
 | Trigger | API call | Method + path |
 |---|---|---|
-| On load | `AuditApi.verify()` | `GET /audit/verify` — the only live call |
-| Date range / Action types / Systems selects, "Generate signed evidence pack" | — | disabled, no request |
+| On load | `PacksApi.list()` | `GET /packs` — key `['packs']`; "Recent packs" + access check |
+| On load / scope change | `PacksApi.preview(scope)` | `POST /packs/preview` — key `['pack-preview', scope]`; live counts + `gaps[]` |
+| On load | `AuditApi.verify()` | `GET /audit/verify` |
+
+| Interaction | API call | Method + path | After |
+|---|---|---|---|
+| Date range / Action types selects | preview refetches | `POST /packs/preview` | resets any started build |
+| Gap checkboxes | — | — | local; every gap must be ticked before the build button enables (the server enforces it too: `422 gaps_not_declared`) |
+| "Build signed evidence pack" | `PacksApi.create(scope, user.id, acknowledgedGaps)` | `POST /packs` | invalidates `['packs']`; then polls `GET /packs/{id}` every 1 s while `building` |
+| (pack `ready`) | `AuditApi.search({ q: packId })` | `GET /audit?q={packId}` | finds the `pack.exported` row → "View the audit entry" link; invalidates `['audit-verify']` |
+| "Download pack" | `api.download(downloadUrl)` | `GET {downloadUrl}` with bearer | 404 on the mock today — the server's error is shown |
 
 ---
 
@@ -231,8 +251,14 @@ follow as before.
 
 | Trigger | API call |
 |---|---|
-| On load | **none** — the mock exposes no `/db/*` endpoint; the screen says so |
-| Interactions | none |
+| On load | `DbApi.schema(q)` | `GET /db/schema?q=` — key `['db-schema', q]` |
+
+| Interaction | API call | Method + path | After |
+|---|---|---|---|
+| Schema search submit | key changes | `GET /db/schema?q=` | empty result says "not indexed is not the same as not existing" |
+| Click / Enter on an object row | `DbApi.object(name)` | `GET /db/objects/{name}` | columns (PK, masked), FKs, dependents, EOD batches, `notConfirmed[]`; `404 not_indexed` renders the server's message |
+| "Run (audited)" | `DbApi.query(sql)` | `POST /db/query` | result table, masked columns named, link to the `db.query` audit row (`auditRef`). A non-SELECT shows a courtesy warning but is still sent — the server refuses with `422 not_read_only` |
+| "Sign as {user} and attach" | `DbApi.investigate(queryAuditRefs, changeRecord, user.id)` | `POST /db/investigations` | shows id, change record, signer; link to its audit row |
 
 ---
 
@@ -273,5 +299,6 @@ From `src/api/endpoints.ts` (kept for completeness):
 
 | Function | Endpoint | Why unused |
 |---|---|---|
+| `AuthApi.me()` | `GET /auth/me` | The login response already carries the user |
 | `ActionsApi.runbook(resolutionId)` | `GET /runbooks/{id}` | Returns `not_found` for the seed's resolution ids; `/incidents/{id}/recall` already returns the same `steps` array |
 | `SourcesApi.citation(citationId)` | `GET /citations/{id}` | The `/citations` list already carries full rows |

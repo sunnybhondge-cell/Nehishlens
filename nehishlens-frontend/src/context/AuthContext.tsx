@@ -1,69 +1,77 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import { apiConfig, type Lens } from '../api/config';
-import { setLens } from '../api/client';
+import { setLens, setSession, clearSession, getRefreshToken, onSessionEnded } from '../api/client';
+import { AuthApi, type SessionUser } from '../api/endpoints';
+import { queryClient } from '../lib/queryClient';
 
 /**
- * Mock sign-in. The NehishLens API has no auth — in a real deployment the
- * bank's identity provider supplies the user and their lens over SSO (see the
- * prototype's ROLES model). This gate just captures a name + lens, persists
- * them, and sets the `X-Lens` header every request carries.
+ * Sign-in against POST /auth/login. The user — and with it the lens — comes
+ * from the server; the frontend never asserts a lens of its own. Tokens live
+ * in memory only (see `setSession` in api/client), so nothing identifying is
+ * persisted and a reload asks for sign-in again.
  */
-export interface AuthUser {
-  name: string;
-  lens: Lens;
-}
+export type AuthUser = SessionUser;
 
 interface AuthContextValue {
   user: AuthUser | null;
-  signIn: (name: string, lens: Lens) => void;
+  /** Throws the server's ApiError (e.g. 401 invalid_credentials) for the caller to render. */
+  signIn: (username: string, password: string) => Promise<AuthUser>;
   signOut: () => void;
+  /** Why the last session ended without the user signing out, in the server's words. */
+  sessionNotice: string | null;
 }
 
-const STORAGE_KEY = 'nehishlens.auth';
-
-function readStored(): AuthUser | null {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as AuthUser;
-    if (parsed && typeof parsed.name === 'string' && typeof parsed.lens === 'string') return parsed;
-  } catch {
-    /* private mode / cleared storage — treat as signed out */
-  }
-  return null;
+// Earlier builds persisted a client-chosen {name, lens} here; drop it so no stale identity lingers.
+try {
+  localStorage.removeItem('nehishlens.auth');
+} catch {
+  /* private mode — nothing stored anyway */
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(() => {
-    const stored = readStored();
-    if (stored) setLens(stored.lens);
-    return stored;
-  });
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [sessionNotice, setSessionNotice] = useState<string | null>(null);
 
-  const signIn = useCallback((name: string, lens: Lens) => {
-    const next: AuthUser = { name: name.trim() || 'operator', lens };
-    setLens(next.lens);
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-    } catch {
-      /* ignore persistence failure */
-    }
-    setUser(next);
+  const reset = useCallback(() => {
+    setLens(apiConfig.defaultLens);
+    setUser(null);
+    // Responses are scoped to the signed-in user's lens — never show them to the next one.
+    queryClient.clear();
+  }, []);
+
+  useEffect(
+    () =>
+      onSessionEnded((message) => {
+        setSessionNotice(message);
+        reset();
+      }),
+    [reset],
+  );
+
+  const signIn = useCallback(async (username: string, password: string) => {
+    const res = await AuthApi.login(username.trim(), password);
+    setSession(res);
+    setLens(res.user.lens);
+    queryClient.clear();
+    setSessionNotice(null);
+    setUser(res.user);
+    return res.user;
   }, []);
 
   const signOut = useCallback(() => {
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      /* ignore */
-    }
-    setLens(apiConfig.defaultLens);
-    setUser(null);
-  }, []);
+    const refreshToken = getRefreshToken();
+    // Logout is idempotent server-side; local sign-out must not wait on or fail with it.
+    if (refreshToken) void AuthApi.logout(refreshToken).catch(() => undefined);
+    clearSession();
+    setSessionNotice(null);
+    reset();
+  }, [reset]);
 
-  return <AuthContext.Provider value={{ user, signIn, signOut }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, signIn, signOut, sessionNotice }}>{children}</AuthContext.Provider>
+  );
 }
 
 // oxlint-disable-next-line react/only-export-components -- colocated context hook

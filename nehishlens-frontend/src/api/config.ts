@@ -43,6 +43,13 @@ export const apiConfig = {
    * production deploy. See src/api/apiLog.ts.
    */
   apiLog: readBool(import.meta.env.VITE_API_LOG as string | undefined, false),
+
+  /**
+   * Development affordances that must not ship: the mock's seeded sign-in
+   * accounts and the Observe-incident form. On under `npm run dev`, off in
+   * builds unless VITE_DEV_TOOLS=true.
+   */
+  devTools: readBool(import.meta.env.VITE_DEV_TOOLS as string | undefined, import.meta.env.DEV),
 };
 
 if (apiConfig.debugLogging) {

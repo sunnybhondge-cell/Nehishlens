@@ -41,9 +41,11 @@ src/
                        label -> citation map that every <Cite> chip resolves against.
 
   context/        - state shared across components without prop-drilling.
-    AuthContext.tsx  - mock sign-in: {name, lens}, persisted to localStorage.
+    AuthContext.tsx  - sign-in via POST /auth/login; the user (and lens)
+                       come from the server. Tokens in memory only.
     ThemeContext.tsx - light/dark, sets html[data-theme], persisted.
-    LensContext.tsx  - active lens -> X-Lens header + html[data-lens].
+    LensContext.tsx  - the user's lens for the UI + html[data-lens].
+                       Never sent to the API.
 
   screens/        - one file per route (Today.tsx, IncidentDetail.tsx, ...).
                     Login.tsx is the sign-in gate. See docs/SCREENS.md.
@@ -105,7 +107,8 @@ calls `fetch()`. `api.list` also strips the `{items,total,cursor}` envelope.
 
 **Step 4 — the client builds the real request.**
 `src/api/client.ts` reads `apiConfig.baseUrl` (from `.env`, via
-`src/api/config.ts`), builds the full URL, adds the `X-Lens` header, and
+`src/api/config.ts`), builds the full URL, adds the `Authorization: Bearer`
+header (refreshing the token once on a 401), and
 either returns the parsed JSON or throws an `ApiError` carrying the server's
 own `{code, message, retryable}`.
 
@@ -137,7 +140,7 @@ useHydrated.ts ──uses──▶ React Query (caching, loading state, retries)
 endpoints.ts:  TodayApi.metricsSummary() = api.get('/metrics/summary')
    │  calls
    ▼
-client.ts:  api.get()  ──▶  fetch(`${VITE_API_BASE_URL}/metrics/summary`, { headers: { 'X-Lens': ... } })
+client.ts:  api.get()  ──▶  fetch(`${VITE_API_BASE_URL}/metrics/summary`, { headers: { Authorization: 'Bearer …' } })
    │
    ▼
 Mock API (https://mock-api-nehishlens.aminobots.com)
@@ -166,8 +169,8 @@ URL scheme (see the wiring guide) and needs no server configuration.
 
 `App.tsx` also gates on auth: `useAuth()` returns `null` until you sign in, and
 while it's `null` the whole app renders `<Login>` instead of the shell. After
-sign-in, `LensSync` pushes the chosen lens into `LensContext` (which sets the
-`X-Lens` header), and `LandingRedirect` sends you to that lens's home screen
+sign-in, `LensSync` pushes the lens the server returned into `LensContext`
+(UI only — it is never sent), and `LandingRedirect` sends you to that lens's home screen
 (`LENS_LANDING` in `AuthContext.tsx`). The full route table is in `docs/SCREENS.md`.
 
 ## 5. A worked example: adding a brand new wired fragment
@@ -225,7 +228,7 @@ fullest example, `src/screens/Sources.tsx` for the `fetchAllSettled` fan-out,
 | **State** | Data that, when changed, causes a re-render. Managed with `useState` or (here) React Query. |
 | **React Query** | The library (`@tanstack/react-query`) that handles fetching, caching, and re-fetching for us. `useHydrated` is built on top of its `useQuery`; writes use `useMutation`. |
 | **`QueryState` / `TableRowsState`** | The wrappers in `src/components/ui.tsx` that turn `{data, isLoading, error}` into skeleton / error banner / rendered data. |
-| **Lens** | The role/permission context sent as `X-Lens` on every request (`ops`, `eng`, `assure`, `exec`) — server decides what each lens can see. Chosen at sign-in, switchable in the top bar. |
+| **Lens** | The role context (`ops`, `eng`, `assure`, `exec`). Derived by the server from the sign-in token — the frontend never chooses or sends it. The server decides what each lens can see. To see another lens, sign in as another user. |
 | **`.env` file** | Where all environment-specific config (API URLs, etc.) lives — see `docs/ENVIRONMENT.md`. |
 
 ## 7. Where to go next

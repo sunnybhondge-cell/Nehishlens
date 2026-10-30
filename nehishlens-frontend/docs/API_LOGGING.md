@@ -316,7 +316,7 @@ Every line in the NDJSON and every `.json` file is one of these:
 | `method` | string | `GET` \| `POST` \| `PATCH`. |
 | `path` | string | Path as passed to `api.*`, e.g. `/incidents/INC-2261?stage=acting`. |
 | `url` | string | The full absolute URL actually fetched (`apiConfig.baseUrl` + `path`). |
-| `lens` | string | The `X-Lens` header sent with the call (`ops` \| `eng` \| `assure` \| `exec`). |
+| `lens` | string | The signed-in user's lens at the time of the call (`ops` \| `eng` \| `assure` \| `exec`). Informational — the API derives the lens from the token; no `X-Lens` header is sent. |
 | `status` | number | HTTP status. `0` = the request never got a response (network fail / timeout / abort). |
 | `ok` | boolean | `true` for 2xx, `false` otherwise. |
 | `durationMs` | number | Wall-clock ms from just before `fetch` to the response being handled. |
@@ -405,7 +405,10 @@ diff <(jq -S . good.ndjson) <(jq -S . logs/api/session-*.ndjson)
   `.ndjson` will simply be missing that one line. The `fetch` fallback path is
   not size-limited.
 - **Headers are not captured** beyond `lens` — no `Authorization`, no cookies.
-  That is deliberate: fewer secrets on disk. (This API uses no auth anyway.)
+  That is deliberate: fewer secrets on disk.
+- **Credentials are redacted from bodies.** Any `password`, `accessToken` or
+  `refreshToken` field is written as `"[redacted]"` (`SECRET_KEYS` in
+  `src/api/apiLog.ts`), so `/auth/*` captures hold no usable secret.
 - **Response bodies are stored verbatim.** If you point the app at a backend
   whose responses contain sensitive data, treat `logs/api/` accordingly — it is
   git-ignored, but it is plaintext on your disk. Clear it when done.

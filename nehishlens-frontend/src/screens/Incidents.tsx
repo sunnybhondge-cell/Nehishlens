@@ -7,6 +7,7 @@ import { ScreenHeader } from '../components/ScreenHeader';
 import { ApiErrorBanner } from '../components/ApiErrorBanner';
 import { Trace, Conf, CiteRow, QueryState } from '../components/ui';
 import type { ApiError } from '../api/client';
+import { apiConfig } from '../api/config';
 import { useAccess } from '../hooks/useAccess';
 import {
   DEFAULT_DIR,
@@ -63,7 +64,14 @@ export function IncidentsList() {
         title="Incidents"
         subtitle={`${incidents.data?.length ?? 0} in queue`}
         crumb="Operations"
-        actions={readOnly ? <span className="chip">read-only</span> : <ObserveIncident onDone={() => incidents.refetch()} />}
+        actions={
+          readOnly ? (
+            <span className="chip">read-only</span>
+          ) : apiConfig.devTools ? (
+            // Dev harness only (Open Queries C2): incidents arrive from observation, not a form.
+            <ObserveIncident onDone={() => incidents.refetch()} />
+          ) : null
+        }
       />
       <Trace>
         Opening, reviewing and recording are three distinct steps — this list opens; the detail page

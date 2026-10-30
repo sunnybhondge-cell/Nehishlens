@@ -2,35 +2,50 @@ import { useState } from 'react';
 import logo from '../assets/nehish-logo.png';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import type { Lens } from '../api/config';
+import { apiConfig, type Lens } from '../api/config';
+import { ApiError } from '../api/client';
 
-const LENSES: { id: Lens; label: string }[] = [
-  { id: 'ops', label: 'Operations' },
-  { id: 'eng', label: 'Engineering' },
-  { id: 'assure', label: 'Assurance' },
-  { id: 'exec', label: 'Executive' },
+/**
+ * The mock's seeded users (Open Queries v1.1 · Authentication). Dev-only:
+ * the mock checks just the username, and the real service replaces that
+ * check wholesale — this list is a convenience, not a client-side rule.
+ */
+const MOCK_ACCOUNTS = [
+  { id: 'vishal.d', label: 'Operations · proposer' },
+  { id: 'r.edwards', label: 'Operations · approver' },
+  { id: 'a.menon', label: 'Engineering' },
+  { id: 'compliance.head', label: 'Assurance' },
+  { id: 's.iyer', label: 'Executive' },
 ];
 
 /**
- * Mock sign-in. There is no auth on the NehishLens API — a real deployment
- * gets the user and lens from the bank's SSO. This captures a name + lens so
- * the app has an identity to attribute actions to and a lens to send as
- * `X-Lens`.
+ * Sign-in via POST /auth/login. The lens is whatever the server returns for
+ * this user — there is no lens picker, by design.
  */
 export function Login({ onDone }: { onDone: (lens: Lens) => void }) {
-  const { signIn } = useAuth();
+  const { signIn, sessionNotice } = useAuth();
   const { theme, toggle } = useTheme();
-  const [name, setName] = useState('vishal.d');
-  const [lens, setLens] = useState<Lens>('ops');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
 
   return (
     <div className="login-wrap">
       <form
         className="panel login-card"
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
-          signIn(name, lens);
-          onDone(lens);
+          setPending(true);
+          setError(null);
+          try {
+            const user = await signIn(username, password);
+            onDone(user.lens);
+          } catch (err) {
+            // Render the server's own words (401 invalid_credentials, network_unreachable…).
+            setError(err instanceof ApiError ? err.message : 'Sign-in failed.');
+            setPending(false);
+          }
         }}
       >
         <div className="login-logo">
@@ -40,34 +55,41 @@ export function Login({ onDone }: { onDone: (lens: Lens) => void }) {
           NehishLens
         </h1>
         <p className="t-cap" style={{ marginTop: 4 }}>
-          Sign in to the operations console. Role is normally supplied by the bank identity provider;
-          pick a lens to preview that experience.
+          Sign in to the operations console. Your lens comes from your account.
         </p>
 
-        <label htmlFor="login-name">Operator</label>
+        {(error ?? sessionNotice) && (
+          <p className="t-cap" role="alert" style={{ marginTop: 12, color: 'var(--crit)' }}>
+            {error ?? sessionNotice}
+          </p>
+        )}
+
+        <label htmlFor="login-name">Username</label>
         <input
           id="login-name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           autoComplete="username"
-          placeholder="you@bank"
+          required
         />
 
-        <label htmlFor="login-lens">Lens</label>
-        <select id="login-lens" value={lens} onChange={(e) => setLens(e.target.value as Lens)}>
-          {LENSES.map((l) => (
-            <option key={l.id} value={l.id}>
-              {l.label}
-            </option>
-          ))}
-        </select>
+        <label htmlFor="login-password">Password</label>
+        <input
+          id="login-password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          autoComplete="current-password"
+          required
+        />
 
         <button
           type="submit"
           className="btn btn-p"
+          disabled={pending}
           style={{ width: '100%', justifyContent: 'center', marginTop: 16 }}
         >
-          Sign in
+          {pending ? 'Signing in…' : 'Sign in'}
         </button>
 
         <button
@@ -78,6 +100,27 @@ export function Login({ onDone }: { onDone: (lens: Lens) => void }) {
         >
           {theme === 'dark' ? '☾ Dark theme' : '☀ Light theme'}
         </button>
+
+        {apiConfig.devTools && (
+          <div className="t-cap" style={{ marginTop: 16 }}>
+            <div className="mono" style={{ marginBottom: 4 }}>DEV · mock accounts (any password; “wrong” → 401)</div>
+            {MOCK_ACCOUNTS.map((a) => (
+              <button
+                key={a.id}
+                type="button"
+                className="btn btn-s btn-q"
+                style={{ margin: '0 4px 4px 0' }}
+                onClick={() => {
+                  setUsername(a.id);
+                  setPassword('mock');
+                }}
+                title={a.label}
+              >
+                {a.id}
+              </button>
+            ))}
+          </div>
+        )}
       </form>
     </div>
   );

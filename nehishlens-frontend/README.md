@@ -19,11 +19,23 @@ npm run dev
 ```
 
 Open http://localhost:5173. The app boots by probing `/health` once
-(`src/hooks/useConnection.ts`), then shows a **sign-in screen**: enter any
-username, pick a lens (Operations / Engineering / Assurance / Executive) and
-click *Sign in*. That lens becomes the `X-Lens` header on every request and you
-land on that lens's home screen. Sign-in is a mock gate — the API has no auth —
-persisted to `localStorage`; the account menu (top-right) signs out.
+(`src/hooks/useConnection.ts`), then shows a **sign-in screen**. Sign in with a
+username and password (`POST /auth/login`). The **lens comes from the server**
+for that user — there is no lens picker — and you land on that lens's home
+screen. Every request then carries the bearer token; the app never sends
+`X-Lens`. Tokens live in memory only, so a reload asks you to sign in again;
+the account menu (top-right) signs out.
+
+On the mock, any password works except `wrong` (which drives the 401). Seeded
+users (also listed on the sign-in screen in dev builds):
+
+| Username | Lens |
+|---|---|
+| `vishal.d` | Operations (proposer) |
+| `r.edwards` | Operations (approver) |
+| `a.menon` | Engineering |
+| `compliance.head` | Assurance |
+| `s.iyer` | Executive |
 
 There's a **light/dark toggle** in the top bar (also on the sign-in screen);
 the choice persists.
@@ -36,7 +48,7 @@ the choice persists.
 | HTTP client (errors, lens header, connection state, list-envelope unwrap) | `src/api/client.ts` |
 | Typed calls for every endpoint | `src/api/endpoints.ts` |
 | Fragment state (skeleton / error / data) | `QueryState` & `TableRowsState` in `src/components/ui.tsx` |
-| Sign-in + lens | `src/context/AuthContext.tsx`, `src/screens/Login.tsx` |
+| Sign-in, tokens, lens from the server | `src/context/AuthContext.tsx`, `src/screens/Login.tsx`, `src/api/client.ts` |
 | Light/dark theme | `src/context/ThemeContext.tsx`, `src/styles/theme-dark.css` |
 | Ported design system (verbatim from the prototype) | `src/styles/legacy.css` |
 | Shell (icon rail, top bar, screen header) | `src/components/Rail.tsx`, `Topbar.tsx`, `ScreenHeader.tsx` |
@@ -56,6 +68,7 @@ Full guide → implementation mapping: **[docs/API_WIRING.md](docs/API_WIRING.md
 - **[docs/API_WIRING.md](docs/API_WIRING.md)** — what's wired live vs. what the mock can't back yet, per screen.
 - **[docs/API_LOGGING.md](docs/API_LOGGING.md)** — the dev-only `logs/api/` request/response capture: why it exists, how it works, why it's absent from a client build.
 - **[docs/VSCODE_SETUP.md](docs/VSCODE_SETUP.md)** — opening, running, and debugging in VS Code.
+- **[docs/PENDING.md](docs/PENDING.md)** — open items after the client's Open Queries v1.1 answers: replies owed, decisions awaited, remaining frontend work, mock deviations.
 
 ## Scripts
 
@@ -72,7 +85,7 @@ npm run lint          # oxlint
 Per the wiring guide: "the check that matters is whether changing the API
 changes the screen." Create an incident via `POST /incidents` (Swagger
 try-it-out, or `npm run check-api`) and confirm the Incidents count moves;
-open `INC-2261`, pick an approver, *Propose action* then *Approve & apply* and
+sign in as `vishal.d`, open `INC-2261`, pick an approver, *Propose action* then *Approve & apply* and
 confirm the Audit trail gains rows; `POST /_reset` and confirm both revert.
 
 ## What's wired
@@ -81,8 +94,11 @@ confirm the Audit trail gains rows; `POST /_reset` and confirm both revert.
 |---|---|
 | Today, Executive, Incidents (+ detail), EOD, Audit, Corpus (+ resolution detail), Sources, Settings, Cortex | fully API-driven |
 | Incident write path — recall, approvers, `POST /actions`, approve, loop advance | wired and exercised |
-| DB Console | no `/db/*` endpoint on the mock — screen says so, shows nothing invented |
-| Evidence-pack **generation** (`/audit/packs/new`) | `/audit/packs/*` is 404 — scope/export inert; the check step (`/audit/verify`) is live |
+| Sign-in (`/auth/login`, `/refresh`, `/logout`) | wired; lens from the token |
+| Audit search + deep-linkable entries (`#/audit/{hash}`) | wired |
+| Evidence-pack builder (`/audit/packs/new`, Assurance) | wired — preview, gap acknowledgement, build, poll, audit link |
+| DB Console (Engineering) | wired — schema, object, read-only query, signed investigation |
+| Observe incident | dev builds only (`VITE_DEV_TOOLS`) |
 
-Both gaps are the mock's, not the app's — when an endpoint appears, each wires
-up with the same `useHydrated` / `QueryState` pattern as everything else.
+What is still open — replies owed to the client, decisions awaited, remaining
+work and mock deviations — is tracked in [docs/PENDING.md](docs/PENDING.md).

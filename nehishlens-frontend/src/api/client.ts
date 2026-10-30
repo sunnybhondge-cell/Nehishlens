@@ -23,12 +23,88 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * The lens the UI renders for, mirrored from the login response. It is never
+ * sent: the server derives the lens from the token, and production rejects
+ * X-Lens. (On the mock, X-Lens even overrides a token's lens on the older
+ * endpoints, so sending it would make the token lens unreliable.)
+ */
 let currentLens: Lens = apiConfig.defaultLens;
 export function setLens(lens: Lens) {
   currentLens = lens;
 }
 export function getLens(): Lens {
   return currentLens;
+}
+
+/**
+ * Token pair from POST /auth/login. Held in memory only — never in storage —
+ * so a reload means signing in again. Nehish recommends the refresh token
+ * in an httpOnly cookie; a browser-only app cannot set one, so that needs a
+ * server in front of the API (pending their confirmation).
+ */
+export interface TokenPair {
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+}
+
+let session: TokenPair | null = null;
+let refreshTimer: ReturnType<typeof setTimeout> | undefined;
+let refreshInFlight: Promise<boolean> | null = null;
+const sessionEndedListeners = new Set<(message: string) => void>();
+
+export function setSession(pair: TokenPair) {
+  session = pair;
+  clearTimeout(refreshTimer);
+  // Refresh ahead of expiry; a 401 mid-request is still handled by the retry in request().
+  refreshTimer = setTimeout(() => void refreshSession(), Math.max(pair.expiresIn * 0.8, 10) * 1000);
+}
+
+export function clearSession() {
+  session = null;
+  clearTimeout(refreshTimer);
+}
+
+export function getRefreshToken(): string | null {
+  return session?.refreshToken ?? null;
+}
+
+/** Called when the session can no longer be refreshed, with the server's message. */
+export function onSessionEnded(listener: (message: string) => void): () => void {
+  sessionEndedListeners.add(listener);
+  return () => sessionEndedListeners.delete(listener);
+}
+
+function endSession(message: string) {
+  clearSession();
+  sessionEndedListeners.forEach((l) => l(message));
+}
+
+/**
+ * The refresh token is single-use, so concurrent 401s must share one refresh:
+ * a second POST /auth/refresh with the same token is refused and would sign
+ * the user out.
+ */
+function refreshSession(): Promise<boolean> {
+  if (!session) return Promise.resolve(false);
+  refreshInFlight ??= request<TokenPair>('/auth/refresh', {
+    method: 'POST',
+    body: { refreshToken: session.refreshToken },
+    noAuthRetry: true,
+  })
+    .then((pair) => {
+      setSession(pair);
+      return true;
+    })
+    .catch((err: unknown) => {
+      if (session) endSession(err instanceof ApiError ? err.message : 'Your session has ended. Sign in again.');
+      return false;
+    })
+    .finally(() => {
+      refreshInFlight = null;
+    });
+  return refreshInFlight;
 }
 
 /**
@@ -48,9 +124,11 @@ export interface RequestOptions {
   mockState?: string;
   /** true => append ?_state=, false/undefined => send as X-Mock-State header (both are supported by the mock). */
   mockStateAsQueryParam?: boolean;
+  /** Skip the refresh-and-retry on 401 (the auth endpoints themselves). */
+  noAuthRetry?: boolean;
 }
 
-async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
+async function request<T>(path: string, opts: RequestOptions = {}, retried = false): Promise<T> {
   const method = opts.method ?? 'GET';
   const forcedState = opts.mockState ?? apiConfig.forceMockState;
 
@@ -59,10 +137,9 @@ async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
     url += (url.includes('?') ? '&' : '?') + `_state=${encodeURIComponent(forcedState)}`;
   }
 
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    'X-Lens': currentLens,
-  };
+  const usedToken = session?.accessToken;
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (usedToken) headers.Authorization = `Bearer ${usedToken}`;
   if (forcedState && !opts.mockStateAsQueryParam) {
     headers['X-Mock-State'] = forcedState;
   }
@@ -112,6 +189,13 @@ async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
         body = { code: 'unknown', message: `Request failed with status ${res.status}`, retryable: false };
       }
       log(res.status, false, body, body.message);
+      // An expired or invalid token is a 401, never a silent fallback to X-Lens.
+      // Refresh once (or pick up a refresh another request already did) and retry;
+      // a 401 means the server did nothing, so replaying a POST is safe.
+      if (res.status === 401 && usedToken && !opts.noAuthRetry && !retried) {
+        const renewed = session && session.accessToken !== usedToken ? true : await refreshSession();
+        if (renewed) return request<T>(path, opts, true);
+      }
       throw new ApiError(res.status, body);
     }
 
@@ -155,7 +239,8 @@ function unwrap<T>(body: PageEnvelope<T> | T[]): T[] {
 export const api = {
   get: <T>(path: string, opts?: Omit<RequestOptions, 'method' | 'body'>) =>
     request<T>(path, { ...opts, method: 'GET' }),
-  post: <T>(path: string, body?: unknown) => request<T>(path, { method: 'POST', body }),
+  post: <T>(path: string, body?: unknown, opts?: Pick<RequestOptions, 'noAuthRetry'>) =>
+    request<T>(path, { ...opts, method: 'POST', body }),
   patch: <T>(path: string, body?: unknown) => request<T>(path, { method: 'PATCH', body }),
 
   /**
@@ -171,6 +256,25 @@ export const api = {
   async page<T>(path: string, opts?: Omit<RequestOptions, 'method' | 'body'>): Promise<PageEnvelope<T>> {
     const body = await request<PageEnvelope<T> | T[]>(path, { ...opts, method: 'GET' });
     return Array.isArray(body) ? { items: body } : body;
+  },
+
+  /**
+   * Fetch a server-relative file URL (e.g. a pack's `downloadUrl`) with the
+   * bearer token — a plain link would go out unauthenticated.
+   */
+  async download(rootPath: string): Promise<Blob> {
+    const headers: Record<string, string> = {};
+    if (session) headers.Authorization = `Bearer ${session.accessToken}`;
+    const res = await fetch(`${apiConfig.root}${rootPath}`, { headers });
+    if (!res.ok) {
+      const body = (await res.json().catch(() => null)) as Partial<ApiErrorBody> | null;
+      throw new ApiError(res.status, {
+        code: body?.code ?? 'unknown',
+        message: body?.message ?? `Download failed with status ${res.status}.`,
+        retryable: false,
+      });
+    }
+    return res.blob();
   },
 
   /** GET /health lives at the root, not under /api/v1 — hit it directly. */

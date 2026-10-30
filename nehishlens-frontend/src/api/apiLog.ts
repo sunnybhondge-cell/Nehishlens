@@ -32,13 +32,16 @@ export interface ApiLogRecord {
   error?: string;
 }
 
+/** Credential fields never written to disk — /auth/* bodies carry them. */
+const SECRET_KEYS = new Set(['password', 'accessToken', 'refreshToken']);
+
 export function recordApiCall(rec: ApiLogRecord): void {
   // `import.meta.env.DEV` is statically replaced with `false` by `vite build`,
   // so in a production bundle this returns immediately and the minifier drops
   // everything below — the `/__apilog` beacon never ships to a client at all.
   if (!import.meta.env.DEV || !apiConfig.apiLog) return;
   try {
-    const payload = JSON.stringify(rec);
+    const payload = JSON.stringify(rec, (key, value) => (SECRET_KEYS.has(key) ? '[redacted]' : value));
     if (typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function') {
       navigator.sendBeacon('/__apilog', new Blob([payload], { type: 'application/json' }));
     } else if (typeof fetch === 'function') {

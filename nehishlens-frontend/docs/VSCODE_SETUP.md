@@ -70,18 +70,27 @@ for the team) and hit any endpoint directly from the editor:
 ```http
 @baseUrl = https://mock-api-nehishlens.aminobots.com/api/v1
 
+### Sign in (mock: any password but "wrong") — copy accessToken into @token
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{ "username": "vishal.d", "password": "mock" }
+
+###
+@token = paste-accessToken-here
+
 ### KPI tiles
 GET {{baseUrl}}/metrics/summary
-X-Lens: ops
+Authorization: Bearer {{token}}
 
 ### Force an error state
 GET {{baseUrl}}/derivations/hours-saved?_state=error
-X-Lens: ops
+Authorization: Bearer {{token}}
 
 ### Propose an action
 POST {{baseUrl}}/actions
 Content-Type: application/json
-X-Lens: ops
+Authorization: Bearer {{token}}
 
 {
   "incidentId": "INC-2261",

@@ -61,14 +61,22 @@ screen  →  useHydrated(key, fetcher)           src/hooks/useHydrated.ts   (or 
 - **`fetchAllSettled`** (`src/api/client.ts`) — use instead of `Promise.all` whenever fanning
   out one request per list item, so a single 403 doesn't take the whole screen down. Worked
   example: `src/screens/Sources.tsx`.
-- **Lens** travels as the `X-Lens` header on every request, set from `LensContext`
-  (`src/context/LensContext.tsx`) via the switcher in `Topbar.tsx`, and kept in sync with the
-  signed-in user by `LensSync` in `App.tsx`. `LensContext` also stamps `data-lens` on `<html>`
-  to activate the accent rules in `legacy.css`. Never hide a control based on lens — render
+- **Lens** comes from the server: `POST /auth/login` returns `user.lens`, and the server
+  derives it from the bearer token on every later call. The frontend **never sends `X-Lens`**
+  (production rejects it, and on the mock it would override the token's lens). `LensContext`
+  (`src/context/LensContext.tsx`) only mirrors the user's lens for the UI — rail, route guard,
+  `data-lens` on `<html>` for the accent rules in `legacy.css`. The top bar shows it read-only;
+  to see another lens, sign in as another user. Never hide a control based on lens — render
   whatever the server returns, including a 403.
-- **Auth** is a mock gate (`src/context/AuthContext.tsx`, `src/screens/Login.tsx`): username +
-  lens, persisted to `localStorage`. No real credential check — the API has no auth. `App.tsx`
-  renders `<Login>` until a user exists, then the shell; sign-out clears storage.
+- **Auth** (`src/context/AuthContext.tsx`, `src/screens/Login.tsx`, `src/api/client.ts`):
+  username + password → `POST /auth/login` → `{accessToken, refreshToken, expiresIn, user}`.
+  Every call carries `Authorization: Bearer`. Tokens are held **in memory only** (a reload signs
+  out) pending the token-storage decision in `docs/PENDING.md`. The refresh token is single-use:
+  `client.ts` refreshes ahead of expiry and on a 401, sharing one in-flight refresh across
+  concurrent requests, then retries once; if refresh fails the session ends and `<Login>` shows
+  the server's message. Sign-out calls `POST /auth/logout` and clears the query cache. On the
+  mock any password works for the five seeded users except `wrong` (401); the dev build lists
+  them on the sign-in screen.
 - **Role-based menu** (`src/nav.ts` + `src/hooks/useAccess.ts`): the rail shows only the items
   the active lens may see; `RouteGuard` in `App.tsx` redirects a disallowed deep link to the
   lens landing; `view` access makes screens drop write controls (`useAccess().readOnly`).
@@ -86,14 +94,14 @@ screen  →  useHydrated(key, fetcher)           src/hooks/useHydrated.ts   (or 
 | Path | Purpose |
 |---|---|
 | `api/config.ts` | all env config, read once; nothing else touches `import.meta.env` |
-| `api/client.ts` | fetch wrapper: `X-Lens` header, `ApiError`, connection state, `api.list`/`api.page` envelope unwrap, `fetchAllSettled` |
+| `api/client.ts` | fetch wrapper: bearer token + single-use refresh/retry, `ApiError`, connection state, `api.list`/`api.page` envelope unwrap, `api.download`, `fetchAllSettled` |
 | `api/endpoints.ts` | one typed function per mock endpoint, grouped to match the wiring guide; response types tightened against the live mock |
 | `hooks/useHydrated.ts` | thin `useQuery` wrapper (`data`/`isLoading`/`error`); fixture arg optional and unused |
 | `hooks/useConnection.ts` | one-time `/health` probe before first paint |
 | `hooks/useCitations.ts` | `useCitationIndex()` — `GET /citations` once (prefetched by `Shell` at boot), as a label → citation map; `<Cite>` resolves label-only chips against it |
-| `context/AuthContext.tsx` | mock sign-in (name + lens), `localStorage`, `LENS_LANDING` map |
+| `context/AuthContext.tsx` | sign-in/out via `/auth/*`, the server-returned user (`id`, `name`, `lens`, `permissions[]`, `tenant`), `LENS_LANDING` map |
 | `context/ThemeContext.tsx` | light/dark, `html[data-theme]`, `localStorage` |
-| `context/LensContext.tsx` | active lens → `X-Lens` header + `html[data-lens]` |
+| `context/LensContext.tsx` | the signed-in user's lens for the UI + `html[data-lens]` (never sent to the API) |
 | `screens/*.tsx` | one file per screen/route (see `docs/SCREENS.md`) |
 | `components/Rail.tsx` `Topbar.tsx` `ScreenHeader.tsx` | the prototype shell |
 | `components/ui.tsx` | shared building blocks: `QueryState`, `TableRowsState`, `Conf`, `Sev`, `Cite`, `PanelHead`, `Trace`, `Skeleton`, `EmptyState` |
@@ -114,7 +122,8 @@ Config lives in `.env.development` (used by `npm run dev`) / `.env.production` (
 `.env.*.local` (gitignored). Key vars: `VITE_API_BASE_URL`, `VITE_API_ROOT`,
 `VITE_DEFAULT_LENS`, `VITE_FORCE_MOCK_STATE` (drive one of the nine mock states across the
 whole app — useful for checking empty/error/denied branches), `VITE_ALLOW_FIXTURE_FALLBACK`
-(now `false`), `VITE_DEBUG_API_LOGGING`, `VITE_API_LOG`. Full table: `docs/ENVIRONMENT.md`.
+(now `false`), `VITE_DEBUG_API_LOGGING`, `VITE_API_LOG`, `VITE_DEV_TOOLS` (dev-only affordances:
+seeded mock accounts on sign-in, the Observe-incident form). Full table: `docs/ENVIRONMENT.md`.
 Never hard-code an API URL anywhere but `.env*` and `src/api/config.ts`.
 
 **Request/response capture** — `VITE_API_LOG=true` (dev only) mirrors every API call
@@ -159,14 +168,23 @@ The screen defaults to the `incident-detail` / `INC-2261` context and its sugges
 one-click a grounded question, so it doesn't look broken. Rail icon is a chat bubble. Visible
 to ops/eng/assure only.
 
-Two screens have **no endpoint on the mock** and say so on-screen rather than showing invented
-data:
-- **DB Console** (`/db-console`) — no `/db/*` surface exists.
-- **Evidence-pack generation** (`/audit/packs/new`) — `/audit/packs/*` is 404. The builder's
-  *check* step is live (`/audit/verify`); scope/export controls are inert and labelled.
+Since Open Queries v1.1 (30 Oct 2026) the mock publishes 50 operations, adding
+authentication, evidence packs and the DB console:
+- **Sign-in** is real (`/auth/*`, see "Auth" above).
+- **Audit** (`/audit`, `/audit/:hash`) — search/filters (`q`, `actor`, `kind`, `from`, `to`)
+  in the query string; deep-linkable entry panel.
+- **Evidence-pack builder** (`/audit/packs/new`, Assurance / `pack:create`) — scope →
+  checks → acknowledge gaps → build (polled while `building`) → link to the `pack.exported` row.
+- **DB Console** (`/db-console`, Engineering) — schema search, object view, audited read-only
+  query, signed investigation.
+- **Observe incident** is dev-only (`VITE_DEV_TOOLS`).
 
-Everything else (Today, Executive, Incidents + detail, EOD, Audit, Corpus + resolution detail,
-Sources, Settings, Cortex) is fully API-driven. Per-screen endpoint map: `docs/SCREENS.md`.
+Every screen is now API-driven. Per-screen endpoint map: `docs/SCREENS.md`. Open items,
+replies owed to Nehish and known mock deviations: **`docs/PENDING.md`**.
+
+**Product rules (Nehish, hard):** NehishLens never writes to a bank system — there is no
+execute path, only proposal → named approver → outcome → receipt. The audit trail is never
+filtered per user. The lens is never chosen by the client.
 
 ## Reference material
 

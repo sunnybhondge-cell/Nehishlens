@@ -47,7 +47,7 @@ export function IncidentDetail() {
   const [outcome, setOutcome] = useState<'applied' | 'failed'>('applied');
   const [condition, setCondition] = useState('');
 
-  const proposerId = user?.name ?? 'operator';
+  const proposerId = user?.id ?? 'operator';
 
   // Every write here appends to the hash chain: refresh the trail and the verify length.
   const invalidateAudit = () => {
@@ -61,7 +61,8 @@ export function IncidentDetail() {
         incidentId: id,
         steps: incident.data?.actionSteps ?? [],
         proposerId,
-        requiredApproverId: approverId || approvers.data?.candidates[0]?.id || '',
+        // Named explicitly by the proposer — never defaulted (the button stays disabled until chosen).
+        requiredApproverId: approverId,
         resolutionId: incident.data?.pastFix?.id,
       }),
     onSuccess: (rec) => {

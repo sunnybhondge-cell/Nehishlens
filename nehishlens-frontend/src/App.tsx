@@ -74,6 +74,7 @@ function Shell() {
             <Route path="/eod/:runId" element={<Eod />} />
             <Route path="/audit" element={<Audit />} />
             <Route path="/audit/packs/new" element={<PackBuilder />} />
+            <Route path="/audit/:hash" element={<Audit />} />
             <Route path="/corpus" element={<Corpus />} />
             <Route path="/corpus/sources" element={<CorpusSourcesRedirect />} />
             <Route path="/corpus/sources/:id" element={<CorpusSourcesRedirect />} />
@@ -91,7 +92,7 @@ function Shell() {
   );
 }
 
-/** Keeps the lens switcher / X-Lens header in sync with the signed-in user. */
+/** Keeps the UI lens in sync with the lens the server returned for the signed-in user. */
 function LensSync() {
   const { user } = useAuth();
   const { setActiveLens } = useLens();

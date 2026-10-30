@@ -23,7 +23,8 @@ gitignored and always takes precedence.
 |---|---|---|---|
 | `VITE_API_BASE_URL` | yes | `https://mock-api-nehishlens.aminobots.com/api/v1` | Base for every `/api/v1/*` call — see `src/api/endpoints.ts`. |
 | `VITE_API_ROOT` | yes | `https://mock-api-nehishlens.aminobots.com` | Base for the unversioned routes: `/health`, `/docs`, `/api-console`, `/collection.json`. |
-| `VITE_DEFAULT_LENS` | no | `ops` | Initial `X-Lens` header (`ops \| eng \| assure \| exec`) until switched in the top bar. |
+| `VITE_DEFAULT_LENS` | no | `ops` | Lens the UI renders before sign-in (`ops \| eng \| assure \| exec`). Never sent to the API — after sign-in the lens is the one the server returns for the user. |
+| `VITE_DEV_TOOLS` | no | on in `npm run dev`, off in builds | Development affordances that must not ship: the seeded mock accounts on the sign-in screen and the Observe-incident form. Set `true`/`false` to override. |
 | `VITE_API_TIMEOUT_MS` | no | `10000` | Abort a request and treat it as failed after this many ms. |
 | `VITE_FORCE_MOCK_STATE` | no | *(empty)* | Forces every GET to carry `X-Mock-State: <value>` — see "Driving the nine states" below. |
 | `VITE_ALLOW_FIXTURE_FALLBACK` | no | `false` | Legacy flag. This build ships no fixtures (`src/fixtures/` was removed) and is live-data-only, so a failed call always surfaces the server's error via `QueryState` regardless of this value. |
